@@ -233,7 +233,7 @@ rule EMR:
 		mrfile = r'{OUTDIR}/.MR/{OID}.tsv'.format(**locals())
 	shell:
 		r'''
-		{RSCRIPT} {MINE}/EMR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --mrfile {output.mrfile}
+		{RSCRIPT} {MINE}/E.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --mrfile {output.mrfile}
 		'''
         """
         
