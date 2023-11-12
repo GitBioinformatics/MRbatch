@@ -112,7 +112,7 @@ if __name__ == '__main__':
     infos = {}
     for index in DF.index:
         ID = DF.loc[index, 'GWAS ID']
-        SN = DF.loc[index, 'Number of SNPs']
+        SN = DF.loc[index, 'Sample size']
         TRAIT = DF.loc[index, 'Trait']
         SN = int(SN) if isNumber(SN) else -1
         infos[ID] = [TRAIT, SN]
