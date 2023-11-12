@@ -47,12 +47,12 @@ TRY <- try({
   eid <- gsub(pattern = '.vcf.gz', replacement = '', x = basename(e.file), fixed = TRUE)
   eofile <- glue('{dirname(e.file)}/{eid}.rds')
   eofilen <- glue('{dirname(e.file)}/{eid}.txt')
-  print(e.file)
   
   vcfRT = readVcf(e.file)
   e.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'exposure')
-  print(e.data)
+  print(pval)
   e.data = subset(e.data, pval.exposure < pval)
+  print(head(e.data))
   
   c.data <- ieugwasr::ld_clump(
     clump_kb = 10000,
