@@ -153,6 +153,41 @@ This scripts writen by Albert丶XN
         return commond
     
     
+    def AddEnvPATHO2E(self, eid, efile, ename, ofile, oname, samplen, outdir, pop, verbose = True):
+        '''
+        
+        @: PGSBGI.SE50
+        添加环境变量, 样本信息等
+        '''
+        commond = '\n'
+        commond += '\n'
+        if verbose:
+            commond += '# . 样本信息 .'; commond += '\n'
+        
+        commond += 'EFILE = "%s"' % efile; commond += '\n'
+        commond += 'ENAME = "%s"' % ename; commond += '\n'
+        commond += 'OFILE = "%s"' % ofile; commond += '\n'
+        commond += 'ONAME = "%s"' % oname; commond += '\n'
+        commond += 'EID = "%s"' % eid; commond += '\n'
+        commond += 'POP = "%s"' % pop; commond += '\n'
+        commond += 'SAMPLEN = "%s"' % samplen; commond += '\n'
+        
+        commond += '\n'
+        if verbose:
+            commond += '# . 数据和输出的主目录 .'; commond += '\n'
+        commond += "OUTDIR = '%s'" % outdir; commond += '\n'
+        
+        commond += '\n'
+        if verbose:
+            commond += '# . 工具路径 .'; commond += '\n'
+        commond += "MINE = '%s'" % self.mine; commond += '\n'
+        commond += "BCFTOOLS = '%s'" % self.bcftools; commond += '\n'
+        commond += "RSCRIPT = '%s'" % self.Rscript; commond += '\n'
+        commond += "PLINK = '%s'" % self.plink; commond += '\n'
+        
+        return commond
+    
+    
     def AddEnvPATHE2O(self, oid, efile, ename, ofile, oname, outdir, verbose = True):
         '''
         
@@ -199,6 +234,20 @@ rule all:
         return commond
     
     
+    def allO2E(self, ):
+        '''
+        '''
+        commond = '\n'
+        commond += """
+rule all:
+	input:
+		r'{OUTDIR}/.MR/{EID}.tsv'.format(**locals()),
+		r'{OUTDIR}/.done/{EID}.done'.format(**locals())
+        """
+        
+        return commond
+    
+    
     def TwoSampleMR(self, ):
         ''' 
         
@@ -239,6 +288,25 @@ rule EMR:
         
         return commond
     
+    def OMR(self, ):
+        ''' 
+        
+        TwoSampleMR
+        '''
+        commond = '\n'
+        commond += """
+rule OMR:
+	input:
+		ofile = r'{OFILE}'.format(**locals())
+	output:
+		mrfile = r'{OUTDIR}/.MR/{OID}.tsv'.format(**locals())
+	shell:
+		r'''
+		{RSCRIPT} {MINE}/O.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --plinkd {PLINK} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --pop {POP} --sn {SAMPLEN} --mrfile {output.mrfile}
+		'''
+        """
+        
+        return commond
     
     def done(self, ):
         ''' 

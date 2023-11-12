@@ -119,10 +119,10 @@ if __name__ == '__main__':
     
     # ------ 收集参数 ------   
     opt = OptionParser()
-    opt.add_option('-e', '--eid',           dest = 'eid',          type = str,
-                   help = 'exposure id')
-    opt.add_option('-o', '--out',           dest = 'out',          type = str,
-                   help = 'OpenGWAS outcome data directory')
+    opt.add_option('-o', '--oid',           dest = 'oid',          type = str,
+                   help = 'outcome id')
+    opt.add_option('-i', '--input',         dest = 'input',          type = str,
+                   help = 'OpenGWAS exposure data directory')
     opt.add_option('--info',                dest = 'info',         type = str,
                    help = 'info file')
     opt.add_option('--outdir',              dest = 'outdir',       type = str,
@@ -151,11 +151,11 @@ if __name__ == '__main__':
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
         opts.info = 'G:/GWAS/OpenGWAS-Checked.xlsx'
-        opts.eid = 'ukb-b-15541'
-        opts.out = 'G:/GWAS/OpenGWAS.test'
-        opts.outdir = 'G:/src.out/OpenGWAS.E2O.out'
+        opts.oid = 'ukb-b-15541'
+        opts.input = 'G:/GWAS/OpenGWAS.test'
+        opts.outdir = 'G:/src.out/OpenGWAS.O2E.out'
         
-    if not (opts.info and opts.eid and opts.out and opts.outdir):
+    if not (opts.info and opts.oid and opts.input and opts.outdir):
         UsageInfo()
         
     if int(opts.pval) == 8:
@@ -171,13 +171,11 @@ if __name__ == '__main__':
         pvlog = 7.30103
         pvint = 8
         
-    outcomes = os.listdir(opts.out)
-    outcomes = [outcome for outcome in outcomes if outcome.endswith('.vcf.gz')]
-    eid = opts.eid
-    efile = f'{opts.out}/{eid}.vcf.gz'
-    elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
-    erds = f'{opts.outdir}/{eid}/{eid}-LP.rds'
-    etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
+    exposures = os.listdir(opts.input)
+    exposures = [exposure for exposure in exposures if exposure.endswith('.vcf.gz')]
+    oid = opts.oid
+    ofile = f'{opts.input}/{oid}.vcf.gz'
+    
     DF = pd.read_excel(opts.info)
     DF = DF[DF['Status'] == 'TRUE']
     infos = {}
@@ -188,38 +186,21 @@ if __name__ == '__main__':
         SN = int(SN) if isNumber(SN) else -1
         infos[ID] = [TRAIT, SN]
         
-    if not os.path.exists(f'{opts.outdir}/{eid}'):
-        os.makedirs(f'{opts.outdir}/{eid}')
+    if not os.path.exists(f'{opts.outdir}/{oid}'):
+        os.makedirs(f'{opts.outdir}/{oid}')
     
-    shell = f"{opts.bcftools} view -i 'LP>={pvlog}' {efile} -Oz -o {elpfile}"
-    if opts.batch and sys.platform.find('win') == -1:
-        print(shell); os.system(shell)
-    shell = f"{opts.bcftools} index -t {elpfile}"
-    if opts.batch and sys.platform.find('win') == -1:
-        print(shell); os.system(shell)
-    
-    shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint}"
-    if opts.batch and sys.platform.find('win') == -1:
-        print(shell); os.system(shell)
-
-    EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
-    if n <= 10:
-        BREAK(n)
-    else:
-        print(f'一共有 {n} 个工具变量')
-        
-    odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
+    odirs = creatDirs(ro = opts.outdir, ot = exposures, it = oid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
-    ename = infos[eid][0]
-    for outcome in outcomes:
-        oid = outcome.split('.')[0]
-        shellFile = '%s/%s.s' % (odirs[oid], oid) 
+    oname = infos[oid][0]
+    for exposure in exposures:
+        eid = exposure.split('.')[0]
+        shellFile = '%s/%s.s' % (odirs[eid], eid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHE2O(oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], outdir = f'{opts.outdir}/{eid}')) 
-        SH.write(CS.all())
-        SH.write(CS.EMR())
+        SH.write(CS.AddEnvPATHO2E(eid = eid, efile = os.path.join(opts.input, exposure), ename = infos[eid][0], ofile = ofile, oname = oname, samplen = infos[eid][1], outdir = f'{opts.outdir}/{oid}'), pop = opts.pop) 
+        SH.write(CS.allO2E())
+        SH.write(CS.OMR())
         SH.write(CS.done())
         SH.close()
         batchs.append(oid)
