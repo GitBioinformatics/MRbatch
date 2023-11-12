@@ -43,6 +43,7 @@ if (PROD) {
 TRY <- try({
   eid <- gsub(pattern = '.vcf.gz', replacement = '', x = basename(e.file), fixed = TRUE)
   eofile <- glue('{dirname(e.file)}/{eid}.rds')
+  eofilen <- glue('{dirname(e.file)}/{eid}.txt')
   
   vcfRT = readVcf(e.file)
   e.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'exposure')
@@ -72,8 +73,10 @@ TRY <- try({
 
 if (class(TRY) == "try-error") {
   readr::write_rds(x = '', file = eofile)
+  write.table(0, file = eofilen, sep = '\t', row.names = FALSE)
 } else {
   readr::write_rds(x = f.data, file = eofile)
+  write.table(nrow(f.data), file = eofilen, sep = '\t', row.names = FALSE)
 }
 
 
