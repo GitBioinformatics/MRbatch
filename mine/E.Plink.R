@@ -32,7 +32,7 @@ if (PROD) {
   e.file <- Args$efile
   plink.d <- Args$plinkd
   pop <- Args$pop
-  pval <- as.numeric(Args$pval)
+  pval <- 5 * 10 ^ -as.integer(Args$pval)
   N <- as.integer(Args$sn)
 } else {
   e.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-2.vcf.gz'

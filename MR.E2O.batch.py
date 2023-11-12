@@ -198,7 +198,7 @@ if __name__ == '__main__':
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
     
-    shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval 5e-{pvint}"
+    shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint}"
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
 
