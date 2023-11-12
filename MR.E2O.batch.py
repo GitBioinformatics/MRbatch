@@ -202,9 +202,11 @@ if __name__ == '__main__':
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
 
-    EF = pd.read_csv(etxt)
-    if EF.loc[0, 'x'] <= 10:
-        BREAK(EF.loc[0, 'x'])
+    EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
+    if n <= 10:
+        BREAK(n)
+    else:
+        print(f'一共有 {n} 个工具变量，数量过少（≤10） ')
         
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
