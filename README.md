@@ -18,6 +18,7 @@ devtools::install_github('mrcieu/gwasglue')
 remotes::install_github('MRCIEU/TwoSampleMR')
 
 install.packages('getopt')
+install.packages('readr')
 ```
 
 # MR.batch (Exposure to Outcome)
@@ -53,7 +54,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --out /mnt/GDRIVE/GWAS/OpenGWAS.test \
 --outdir /mnt/GDRIVE/src.out/OpenGWAS.E2O.out \
 --info /mnt/GDRIVE/GWAS/OpenGWAS-Checked.xlsx \
---input ieu-a-2 \
+--eid ukb-b-15541 \
 --batch --keep-going --jobs 2
 ```
 

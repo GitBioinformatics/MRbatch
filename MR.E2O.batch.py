@@ -34,6 +34,44 @@ from optparse import OptionParser
 # os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
 
+def UsageInfo():
+    ''' 
+    
+    帮助信息 
+    '''
+    usage ='''         
+    Usage: xxx.py [options]
+    
+    Options:
+      -h, --help            show this help message and exit
+      -e EID, --eid=EID     exposure id
+      -o OUT, --out=OUT     OpenGWAS outcome data directory
+      --info=INFO           info file
+      --outdir=OUTDIR       Output directory
+      --bcftools=BCFTOOLS   bcftools
+      --Rscript=RSCRIPT     Rscript
+      --plink=PLINK         plink directory
+      --python3=PYTHON3     python3 directory
+      -m MINE, --mine=MINE  self-definied scripts
+      --pop=POP             Super-population to use as reference panel. Default =
+                            "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR".
+                            "legacy" also available - which is a previously used
+                            verison of the EUR panel with a slightly different set
+                            of markers.
+      --batch               batch mode
+      --keep-going          在某个任务失败后, 继续运行其他的独立任务
+      --jobs=JOBS           批量模式运行时，最大支持并行的任务数
+      
+    Description:
+        This is main process for MR pipeline.
+        
+    Example:
+        xxx
+        
+    '''
+    print(usage)
+    exit(1)
+    
 
 def isNumber(s):
     """ 判断是否为数字 """
@@ -107,12 +145,15 @@ if __name__ == '__main__':
         opts.out = 'G:/GWAS/OpenGWAS.test'
         opts.outdir = 'G:/src.out/OpenGWAS.E2O.out/'
         
+    if not (opts.info and opts.eid and opts.out and opts.outdir):
+        UsageInfo()
+        
     outcomes = os.listdir(opts.out)
     outcomes = [outcome for outcome in outcomes if outcome.endswith('.vcf.gz')]
     eid = opts.eid
     efile = f'{opts.out}/{eid}.vcf.gz'
-    elpfile = f'{opts.out}/{eid}-LP.vcf.gz'
-    etsv = f'{opts.out}/{eid}.tsv'
+    elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
+    etsv = f'{opts.outdir}/{eid}/{eid}.tsv'
     DF = pd.read_excel(opts.info)
     DF = DF[DF['Status'] == 'TRUE']
     infos = {}
@@ -125,14 +166,14 @@ if __name__ == '__main__':
     
     shell = f"{opts.bcftools} view -i 'LP>=7.30103' {efile} -Oz -o {elpfile}"
     if opts.batch and sys.platform.find('win') == -1:
-        os.system(shell)
+        print(shell); os.system(shell)
     shell = f"{opts.bcftools} index -t {elpfile}"
     if opts.batch and sys.platform.find('win') == -1:
-        os.system(shell)
+        print(shell); os.system(shell)
     
     shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop}"
     if opts.batch and sys.platform.find('win') == -1:
-        os.system(shell)
+        print(shell); os.system(shell)
     
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
