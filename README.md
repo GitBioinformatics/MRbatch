@@ -1,2 +1,59 @@
-# MRbatch
-MRbatch for GWAS
+# Dependencies
+
+```R
+install.packages('glue')
+install.packages('usethis') # libgit2-dev
+install.packages('ragg') # libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
+install.packages('pkgdown') # libxml2-dev
+install.packages('profvis')
+install.packages('devtools') # libharfbuzz-dev libfribidi-dev
+install.packages('gmp') # libgmp-dev
+install.packages('arrangements')
+install.packages('remotes')
+
+install.packages('BiocManager')
+BiocManager::install('VariantAnnotation')
+BiocManager::install('MendelianRandomization')
+devtools::install_github('mrcieu/gwasglue')
+remotes::install_github('MRCIEU/TwoSampleMR')
+
+install.packages('getopt')
+```
+
+# MR.batch (Exposure to Outcome)
+
+```shell
+nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
+--out /mnt/GDRIVE/GWAS/OpenGWAS.200 \
+--outdir /mnt/GDRIVE/src.out/OpenGWAS.out \
+--info /mnt/GDRIVE/GWAS/OpenGWAS-Checked.xlsx \
+--input /home/hello/ieu-a-2-LP.vcf.gz \
+--batch --keep-going --jobs 24 &
+```
+
+```shell
+/tools/R-4.3.2/bin/Rscript /analysis/004.Batch.MR/mine/TwoSampleMR.R \
+--efile /home/hello/ieu-a-2-LP.vcf.gz \
+--ofile /mnt/GDRIVE/OpenGWAS.test/bbj-a-5.vcf.gz \
+--ename 'Body fat percentage' \
+--oname 'Gastric Cancer' \
+--oid bbj-a-5 \
+--plinkd /tools/plink-1.90 \
+--bcftoolsd /tools/bcftools-1.18/bcftools \
+--outdir /mnt/GDRIVE/src.out/OpenGWAS.out/ieu-a-2/.done \
+--thisdir /mnt/GDRIVE/src.out/OpenGWAS.out/ieu-a-2/bbj-a-5 \
+--sn 338903
+```
+
+# MR.E2O.batch (Exposure to Outcome)
+
+```shell
+# Test
+/tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
+--out /mnt/GDRIVE/GWAS/OpenGWAS.test \
+--outdir /mnt/GDRIVE/src.out/OpenGWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/OpenGWAS-Checked.xlsx \
+--input ieu-a-2 \
+--batch --keep-going --jobs 2
+```
+
