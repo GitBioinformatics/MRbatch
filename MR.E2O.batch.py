@@ -153,7 +153,7 @@ if __name__ == '__main__':
     eid = opts.eid
     efile = f'{opts.out}/{eid}.vcf.gz'
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
-    ersd = f'{opts.outdir}/{eid}/{eid}.rsd'
+    erds = f'{opts.outdir}/{eid}/{eid}.rds'
     DF = pd.read_excel(opts.info)
     DF = DF[DF['Status'] == 'TRUE']
     infos = {}
@@ -184,7 +184,7 @@ if __name__ == '__main__':
         shellFile = '%s/%s.s' % (odirs[oid], oid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHE2O(oid = oid, efile = ersd, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], outdir = f'{opts.outdir}/{eid}')) 
+        SH.write(CS.AddEnvPATHE2O(oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], outdir = f'{opts.outdir}/{eid}')) 
         SH.write(CS.all())
         SH.write(CS.EMR())
         SH.write(CS.done())
