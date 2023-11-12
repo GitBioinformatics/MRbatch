@@ -51,6 +51,7 @@ TRY <- try({
   vcfRT = readVcf(e.file)
   e.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'exposure')
   e.data = subset(e.data, pval.exposure < pval)
+  print(e.data)
   
   c.data <- ieugwasr::ld_clump(
     clump_kb = 10000,
@@ -72,7 +73,6 @@ TRY <- try({
   } else {
     f.data <- f.data[f.data$F > Ffilter, ]
   }
-  print(f.data)
 }, silent = FALSE)
 
 if (class(TRY) == "try-error") {
