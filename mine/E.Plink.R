@@ -73,10 +73,10 @@ TRY <- try({
 
 if (class(TRY) == "try-error") {
   readr::write_rds(x = '', file = eofile)
-  write.table(0, file = eofilen, sep = '\t', row.names = FALSE)
+  write.table(0, file = eofilen, sep = '\t', row.names = FALSE, quote = FALSE)
 } else {
   readr::write_rds(x = f.data, file = eofile)
-  write.table(nrow(f.data), file = eofilen, sep = '\t', row.names = FALSE)
+  write.table(nrow(f.data), file = eofilen, sep = '\t', row.names = FALSE, quote = FALSE)
 }
 
 

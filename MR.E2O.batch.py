@@ -72,6 +72,14 @@ def UsageInfo():
     print(usage)
     exit(1)
     
+def BREAK(n):
+    ''' 
+
+    '''
+    INFO = f'一共有 {n} 个工具变量，数量过少（≤10） '
+    print(INFO)
+    exit(1)
+
 
 def isNumber(s):
     """ 判断是否为数字 """
@@ -154,6 +162,7 @@ if __name__ == '__main__':
     efile = f'{opts.out}/{eid}.vcf.gz'
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
     erds = f'{opts.outdir}/{eid}/{eid}.rds'
+    etxt = f'{opts.outdir}/{eid}/{eid}.txt'
     DF = pd.read_excel(opts.info)
     DF = DF[DF['Status'] == 'TRUE']
     infos = {}
@@ -175,6 +184,11 @@ if __name__ == '__main__':
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
     
+    etxt = 'G:/src.out/OpenGWAS.E2O.out/ukb-b-15541/ukb-b-15541-LP.txt'
+    EF = pd.read_csv(etxt)
+    if EF.loc[0, 'x'] <= 10:
+        BREAK(EF.loc[0, 'x'])
+        
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
