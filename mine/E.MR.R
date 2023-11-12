@@ -57,10 +57,11 @@ if (PROD) {
 
 TRY <- try({
   f.data <- readr::read_rds(e.file)
+  e.vcf.gz <- glue("{dirname(e.file)}/{gsub(pattern = '.rds', replacement = '.vcf.gz', x = basename(e.file), fixed = TRUE)}")
   
   if (Sys.info()['sysname'] == 'Linux') {
     system(glue('{bcftools.d} index -t {o.file}'), intern = FALSE)
-    system(glue('{bcftools.d} isec -n =2 -w 1 {o.file} {e.file} -Oz -o {olp.file}'), intern = FALSE)
+    system(glue('{bcftools.d} isec -n =2 -w 1 {o.file} {e.vcf.gz} -Oz -o {olp.file}'), intern = FALSE)
     o.file = olp.file
   } else {
     o.file = o.file
