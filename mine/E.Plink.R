@@ -1,4 +1,4 @@
-options(stringsAsFactors = FALSE, warn = -1, scipen = 200)
+options(stringsAsFactors = FALSE, warn = -1, scipen = -999)
 suppressMessages(library(glue))
 suppressMessages(library(dplyr))
 suppressMessages(library(getopt))
@@ -50,9 +50,7 @@ TRY <- try({
   
   vcfRT = readVcf(e.file)
   e.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'exposure')
-  print(pval)
   e.data = subset(e.data, pval.exposure < pval)
-  print(head(e.data))
   
   c.data <- ieugwasr::ld_clump(
     clump_kb = 10000,

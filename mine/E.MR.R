@@ -1,4 +1,4 @@
-options(stringsAsFactors = FALSE, warn = -1, scipen = 200)
+options(stringsAsFactors = FALSE, warn = -1, scipen = -999)
 suppressMessages(library(glue))
 suppressMessages(library(dplyr))
 suppressMessages(library(getopt))
