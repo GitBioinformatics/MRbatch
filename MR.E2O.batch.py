@@ -176,8 +176,8 @@ if __name__ == '__main__':
     eid = opts.eid
     efile = f'{opts.out}/{eid}.vcf.gz'
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
-    erds = f'{opts.outdir}/{eid}/{eid}.rds'
-    etxt = f'{opts.outdir}/{eid}/{eid}.txt'
+    erds = f'{opts.outdir}/{eid}/{eid}-LP.rds'
+    etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
     DF = pd.read_excel(opts.info)
     DF = DF[DF['Status'] == 'TRUE']
     infos = {}

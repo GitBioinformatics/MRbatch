@@ -45,9 +45,6 @@ if (PROD) {
 
 TRY <- try({
   eid <- gsub(pattern = '.vcf.gz', replacement = '', x = basename(e.file), fixed = TRUE)
-  if (endsWith(x = eid, suffix = '-LP')) {
-    eid <- gsub(pattern = '-LP', replacement = '', x = eid, fixed = TRUE)
-  }
   eofile <- glue('{dirname(e.file)}/{eid}.rds')
   eofilen <- glue('{dirname(e.file)}/{eid}.txt')
   
