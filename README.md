@@ -49,7 +49,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 
 ```shell
 # Test
-/tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
+/tools/Python-3.8.3/python /analysis/Batch.MR/MR.E2O.batch.py \
 --out /mnt/GDRIVE/GWAS/OpenGWAS.test \
 --outdir /mnt/GDRIVE/src.out/OpenGWAS.E2O.out \
 --info /mnt/GDRIVE/GWAS/OpenGWAS-Checked.xlsx \
