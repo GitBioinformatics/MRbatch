@@ -119,7 +119,7 @@ if __name__ == '__main__':
     
     # ------ 收集参数 ------   
     opt = OptionParser()
-    opt.add_option('-e', '--eid',           dest = 'eid',        type = str,
+    opt.add_option('-e', '--eid',           dest = 'eid',          type = str,
                    help = 'exposure id')
     opt.add_option('-o', '--out',           dest = 'out',          type = str,
                    help = 'OpenGWAS outcome data directory')
@@ -137,8 +137,10 @@ if __name__ == '__main__':
                    help = 'python3 directory')
     opt.add_option('-m', '--mine',          dest = 'mine',         type = str,             default = '/analysis/Batch.MR/mine', 
                    help = 'self-definied scripts')
-    opt.add_option('--pop',                 dest = 'pop',         type = str,              default = 'EUR', 
+    opt.add_option('--pop',                 dest = 'pop',          type = str,             default = 'EUR', 
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
+    opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
+                   help = 'pval, [8, 7, 6]')
     opt.add_option('--batch',               dest = 'batch',        action = 'store_true',  default = False, 
                    help = 'batch mode')
     opt.add_option('--keep-going',          dest = 'keep',         action = 'store_true',  default = False, 
@@ -155,6 +157,19 @@ if __name__ == '__main__':
         
     if not (opts.info and opts.eid and opts.out and opts.outdir):
         UsageInfo()
+        
+    if int(opts.pval) == 8:
+        pvlog = 7.30103
+        pvint = 8
+    if int(opts.pval) == 7:
+        pvlog = 6.30103
+        pvint = 7
+    if int(opts.pval) == 6:
+        pvlog = 5.30103
+        pvint = 6
+    else:
+        pvlog = 7.30103
+        pvint = 8
         
     outcomes = os.listdir(opts.out)
     outcomes = [outcome for outcome in outcomes if outcome.endswith('.vcf.gz')]
@@ -173,18 +188,17 @@ if __name__ == '__main__':
         SN = int(SN) if isNumber(SN) else -1
         infos[ID] = [TRAIT, SN]
     
-    shell = f"{opts.bcftools} view -i 'LP>=7.30103' {efile} -Oz -o {elpfile}"
+    shell = f"{opts.bcftools} view -i 'LP>={pvlog}' {efile} -Oz -o {elpfile}"
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
     shell = f"{opts.bcftools} index -t {elpfile}"
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
     
-    shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop}"
+    shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval 5e-{pvint}"
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
-    
-    etxt = 'G:/src.out/OpenGWAS.E2O.out/ukb-b-15541/ukb-b-15541-LP.txt'
+
     EF = pd.read_csv(etxt)
     if EF.loc[0, 'x'] <= 10:
         BREAK(EF.loc[0, 'x'])

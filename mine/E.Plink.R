@@ -17,6 +17,7 @@ if (PROD) {
     'help', 'h', 0, 'loical', '帮助文档',
     'efile', 'e', 1, 'character', 'exposure file',
     'plinkd', 'x', 1, 'character', 'plink',
+    'pval', 'v', 1, 'integer', 'pval',
     
     'sn', 'n', 1, 'integer', 'sample number',
     'pop', 'p', 1, 'character', 'pop type'),
@@ -24,17 +25,19 @@ if (PROD) {
     ncol = 5)
   Args = getopt(command)
   
-  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$plinkd) || is.null(Args$pop) || is.null(Args$sn)) {
+  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$plinkd) || is.null(Args$pval) || is.null(Args$pop) || is.null(Args$sn)) {
     cat(paste(getopt(command, usage = TRUE), "\n"))
     q( status = 1)
   }
   e.file <- Args$efile
   plink.d <- Args$plinkd
   pop <- Args$pop
+  pval <- as.numeric(Args$pval)
   N <- as.integer(Args$sn)
 } else {
   e.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-2.vcf.gz'
   plink.d <- 'E:/BaiduNetdiskWorkspace/005.Bioinformatics/MRanalysis/www/bin'
+  pval <- 5e-8
   pop <- 'EUR'
   N <- 338903
 }
@@ -47,7 +50,7 @@ TRY <- try({
   
   vcfRT = readVcf(e.file)
   e.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'exposure')
-  e.data = subset(e.data, pval.exposure < 5e-8)
+  e.data = subset(e.data, pval.exposure < pval)
   
   c.data <- ieugwasr::ld_clump(
     clump_kb = 10000,
