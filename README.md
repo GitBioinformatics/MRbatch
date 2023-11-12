@@ -63,3 +63,20 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --batch
 ```
 
+# MR.O2E.batch (Outcome to Exposure)
+
+```shell
+# Test
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.O2E.batch.py \
+--input /mnt/GDRIVE/GWAS/OpenGWAS.test \
+--outdir /mnt/GDRIVE/src.out/OpenGWAS.O2E.out \
+--info /mnt/GDRIVE/GWAS/OpenGWAS-Checked.xlsx \
+--oid ieu-b-40 \
+--pval 8 \
+--batch \
+--keep-going \
+--jobs 2 \
+--batch
+```
+

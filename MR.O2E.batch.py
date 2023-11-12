@@ -198,7 +198,7 @@ if __name__ == '__main__':
         shellFile = '%s/%s.s' % (odirs[eid], eid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHO2E(eid = eid, efile = os.path.join(opts.input, exposure), ename = infos[eid][0], ofile = ofile, oname = oname, samplen = infos[eid][1], outdir = f'{opts.outdir}/{oid}'), pop = opts.pop) 
+        SH.write(CS.AddEnvPATHO2E(eid = eid, efile = os.path.join(opts.input, exposure), ename = infos[eid][0], ofile = ofile, oname = oname, samplen = infos[eid][1], outdir = f'{opts.outdir}/{oid}', pop = opts.pop)) 
         SH.write(CS.allO2E())
         SH.write(CS.OMR())
         SH.write(CS.done())
