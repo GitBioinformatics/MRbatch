@@ -72,6 +72,7 @@ TRY <- try({
   } else {
     f.data <- f.data[f.data$F > Ffilter, ]
   }
+  print(f.data)
 }, silent = FALSE)
 
 if (class(TRY) == "try-error") {
