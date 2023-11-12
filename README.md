@@ -1,0 +1,2 @@
+# MRbatch
+MRbatch for GWAS
