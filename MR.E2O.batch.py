@@ -187,6 +187,9 @@ if __name__ == '__main__':
         TRAIT = DF.loc[index, 'Trait']
         SN = int(SN) if isNumber(SN) else -1
         infos[ID] = [TRAIT, SN]
+        
+    if not os.path.exists(f'{opts.outdir}/{eid}'):
+        os.mkdir(f'{opts.outdir}/{eid}')
     
     shell = f"{opts.bcftools} view -i 'LP>={pvlog}' {efile} -Oz -o {elpfile}"
     if opts.batch and sys.platform.find('win') == -1:
