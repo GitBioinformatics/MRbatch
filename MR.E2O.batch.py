@@ -31,7 +31,8 @@ import os
 import pandas as pd
 from optparse import OptionParser
 
-# os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
+# BaiduSyncdisk BaiduNetdiskWorkspace
+# os.chdir('E:/BaiduSyncdisk/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
 
 def UsageInfo():
@@ -78,7 +79,8 @@ def BREAK(n):
     '''
     INFO = f'一共有 {n} 个工具变量，数量过少（≤10） '
     print(INFO)
-    exit(1)
+    if sys.platform.find('win') == -1:
+        exit(1)
 
 
 def isNumber(s):
@@ -141,6 +143,8 @@ if __name__ == '__main__':
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
+    opt.add_option('--oids',                dest = 'oids',         type = str,
+                   help = 'outcome ids')
     opt.add_option('--batch',               dest = 'batch',        action = 'store_true',  default = False, 
                    help = 'batch mode')
     opt.add_option('--keep-going',          dest = 'keep',         action = 'store_true',  default = False, 
@@ -150,10 +154,12 @@ if __name__ == '__main__':
     
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
-        opts.info = 'G:/GWAS/OpenGWAS-Checked.xlsx'
-        opts.eid = 'ukb-b-15541'
-        opts.out = 'G:/GWAS/OpenGWAS.test'
-        opts.outdir = 'G:/src.out/OpenGWAS.E2O.out'
+        opts.info = 'G:/GWAS/IEU.GWAS-v2.xlsx'
+        opts.eid = 'bbj-a-2'
+        opts.out = 'G:/GWAS/IEU.GWAS.test'
+        opts.out = 'G:/GWAS/IEU.GWAS.200'
+        opts.outdir = 'G:/src.out/IEU.GWAS.E2O.out'
+        opts.oids = 'E:/BaiduSyncdisk/003.MPU/004.Batch.MR/test/outcomes.txt'
         
     if not (opts.info and opts.eid and opts.out and opts.outdir):
         UsageInfo()
@@ -171,8 +177,21 @@ if __name__ == '__main__':
         pvlog = 7.30103
         pvint = 8
         
-    outcomes = os.listdir(opts.out)
-    outcomes = [outcome for outcome in outcomes if outcome.endswith('.vcf.gz')]
+    oidstmp = opts.oids
+    if oidstmp != None:
+        if os.path.exists(oidstmp):
+            oids = [item.strip() for item in list(set(pd.read_csv(oidstmp, header = None)[0])) if item.strip() != '']
+        else:
+            oids = [item.strip() for item in list(set(oidstmp.split(';'))) if item.strip() != '']
+    else:
+        oids = []
+    
+    outcomestmp = os.listdir(opts.out)
+    if len(oids) == 0:
+        outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and not outcome.rstrip('.vcf.gz') in [opts.eid]]
+    else:
+        outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and outcome.rstrip('.vcf.gz') in oids and not outcome.rstrip('.vcf.gz') in [opts.eid]]
+    
     eid = opts.eid
     efile = f'{opts.out}/{eid}.vcf.gz'
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
@@ -202,11 +221,12 @@ if __name__ == '__main__':
     if opts.batch and sys.platform.find('win') == -1:
         print(shell); os.system(shell)
 
-    EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
-    if n <= 10:
-        BREAK(n)
-    else:
-        print(f'一共有 {n} 个工具变量')
+    if opts.batch and sys.platform.find('win') == -1:
+        EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
+        if n <= 10:
+            BREAK(n)
+        else:
+            print(f'一共有 {n} 个工具变量')
         
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
@@ -217,7 +237,7 @@ if __name__ == '__main__':
         shellFile = '%s/%s.s' % (odirs[oid], oid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHE2O(oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], outdir = f'{opts.outdir}/{eid}')) 
+        SH.write(CS.AddEnvPATHE2O(oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], pval = pvint, outdir = f'{opts.outdir}/{eid}')) 
         SH.write(CS.all())
         SH.write(CS.EMR())
         SH.write(CS.done())

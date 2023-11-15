@@ -23,6 +23,7 @@ if (PROD) {
     'oid', 'q', 1, 'character', 'outcome id',
     'plinkd', 'x', 1, 'character', 'plink',
     'bcftoolsd', 'y', 1, 'character', 'bcftools',
+    'pval', 'v', 1, 'integer', 'pval',
     
     'thisdir', 'v', 1, 'character', 'thisdir',
     'sn', 'n', 1, 'integer', 'sample number',
@@ -31,7 +32,7 @@ if (PROD) {
     ncol = 5)
   Args = getopt(command)
   
-  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$ofile) || is.null(Args$ename) || is.null(Args$oname) || is.null(Args$oid) || is.null(Args$bcftoolsd) || is.null(Args$mrfile) || is.null(Args$thisdir)) {
+  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$ofile) || is.null(Args$pval) || is.null(Args$ename) || is.null(Args$oname) || is.null(Args$oid) || is.null(Args$bcftoolsd) || is.null(Args$mrfile) || is.null(Args$thisdir)) {
     cat(paste(getopt(command, usage = TRUE), "\n"))
     q( status = 1)
   }
@@ -43,14 +44,16 @@ if (PROD) {
   bcftools.d <- Args$bcftoolsd
   mrfile <- Args$mrfile
   thisdir <- Args$thisdir
+  pval <- 5 * 10 ^ -as.integer(Args$pval)
   olp.file <- glue('{thisdir}/{oid}-LP.vcf.gz')
 } else {
-  e.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-2.rds'
-  o.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-7.vcf.gz'
+  e.file <- 'G:/src.out/IEU.GWAS.E2O.out/bbj-a-2/bbj-a-2-LP.rds'
+  o.file <- 'G:/src.out/IEU.GWAS.E2O.out/bbj-a-2/bbj-a-7/bbj-a-7-LP.vcf.gz'
   e.name <- 'Body Fat Percentage'
   o.name <- 'Gastric Cancer'
-  oid <- 'ieu-a-7'
+  oid <- 'bbj-a-7'
   bcftools.d <- '/tools/bcftools-1.18/bcftools'
+  pval <- 5e-8
   mrfile <- glue('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/MR.out/{oid}.tsv')
 }
 
@@ -70,6 +73,7 @@ TRY <- try({
   vcfRT = readVcf(o.file)
   o.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'outcome')
   o.data <- merge(f.data, o.data, by.x = 'SNP', by.y = 'SNP')
+  o.data <- o.data %>% dplyr::filter(pval.outcome > pval)
   
   f.data$Phenotype <- e.name
   o.data$Phenotype <- o.name

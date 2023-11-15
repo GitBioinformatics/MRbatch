@@ -188,7 +188,7 @@ This scripts writen by Albert丶XN
         return commond
     
     
-    def AddEnvPATHE2O(self, oid, efile, ename, ofile, oname, outdir, verbose = True):
+    def AddEnvPATHE2O(self, oid, efile, ename, ofile, oname, pval, outdir, verbose = True):
         '''
         
         @: PGSBGI.SE50
@@ -204,6 +204,7 @@ This scripts writen by Albert丶XN
         commond += 'OFILE = "%s"' % ofile; commond += '\n'
         commond += 'ONAME = "%s"' % oname; commond += '\n'
         commond += 'OID = "%s"' % oid; commond += '\n'
+        commond += 'PVAL = "%s"' % pval; commond += '\n'
         
         commond += '\n'
         if verbose:
@@ -282,7 +283,7 @@ rule EMR:
 		mrfile = r'{OUTDIR}/.MR/{OID}.tsv'.format(**locals())
 	shell:
 		r'''
-		{RSCRIPT} {MINE}/E.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --mrfile {output.mrfile}
+		{RSCRIPT} {MINE}/E.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --mrfile {output.mrfile} --pval {PVAL}
 		'''
         """
         
