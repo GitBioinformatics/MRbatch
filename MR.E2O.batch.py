@@ -223,7 +223,7 @@ if __name__ == '__main__':
 
     if opts.batch and sys.platform.find('win') == -1:
         EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
-        if n <= 10:
+        if n <= 5:
             BREAK(n)
         else:
             print(f'一共有 {n} 个工具变量')

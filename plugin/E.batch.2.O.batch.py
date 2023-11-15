@@ -40,9 +40,10 @@ if __name__ == '__main__':
                    help = 'OpenGWAS outcome data directory')
     
     
+    # BaiduNetdiskWorkspace BaiduSyncdisk
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
-        opts.eids = 'E:/BaiduSyncdisk/003.MPU/004.Batch.MR/test/exposures.txt'
+        opts.eids = 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/exposures.txt'
         opts.out = 'G:/GWAS/IEU.GWAS.200'
 
     eidstmp = opts.eids
