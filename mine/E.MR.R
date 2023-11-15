@@ -23,7 +23,7 @@ if (PROD) {
     'oid', 'q', 1, 'character', 'outcome id',
     'plinkd', 'x', 1, 'character', 'plink',
     'bcftoolsd', 'y', 1, 'character', 'bcftools',
-    'pval', 'v', 1, 'integer', 'pval',
+    'pval', 'a', 1, 'integer', 'pval',
     
     'thisdir', 'v', 1, 'character', 'thisdir',
     'sn', 'n', 1, 'integer', 'sample number',
