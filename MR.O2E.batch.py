@@ -141,6 +141,8 @@ if __name__ == '__main__':
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
+    opt.add_option('--niv',                 dest = 'niv',          type = int,             default = 5, 
+                   help = 'Minimum value of instrumental variables.')
     opt.add_option('--batch',               dest = 'batch',        action = 'store_true',  default = False, 
                    help = 'batch mode')
     opt.add_option('--keep-going',          dest = 'keep',         action = 'store_true',  default = False, 

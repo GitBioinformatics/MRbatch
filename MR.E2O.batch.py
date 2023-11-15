@@ -143,6 +143,8 @@ if __name__ == '__main__':
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
+    opt.add_option('--niv',                 dest = 'niv',          type = int,             default = 5, 
+                   help = 'Minimum value of instrumental variables.')
     opt.add_option('--oids',                dest = 'oids',         type = str,
                    help = 'outcome ids')
     opt.add_option('--batch',               dest = 'batch',        action = 'store_true',  default = False, 
@@ -223,7 +225,7 @@ if __name__ == '__main__':
 
     if opts.batch and sys.platform.find('win') == -1:
         EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
-        if n <= 5:
+        if n < opts.niv:
             BREAK(n)
         else:
             print(f'一共有 {n} 个工具变量')

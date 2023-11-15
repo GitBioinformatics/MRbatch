@@ -62,9 +62,9 @@ if __name__ == '__main__':
         exposures = [outcome.rstrip('.vcf.gz') for outcome in exposurestmp if outcome.endswith('.vcf.gz') and outcome.rstrip('.vcf.gz') in eids]
     
 
-step = 18
+step = 26
 ebatchs = [exposures[i:i + step] for i in range(0, len(exposures), step)]
 
 for ebid in ebatchs[0]:
-    shell = f'/tools/Python-3.8.3/python /analysis/Batch.MR/MR.E2O.batch.py --out /mnt/GDRIVE/GWAS/IEU.GWAS.200 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out --info /mnt/GDRIVE/GWAS/IEU.GWAS-v2.xlsx --eid {ebid} --pval 8 --batch --keep-going --jobs 1 --batch'
+    shell = f'nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MR.E2O.batch.py --out /mnt/GDRIVE/GWAS/IEU.GWAS.200 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out --info /mnt/GDRIVE/GWAS/IEU.GWAS-v2.xlsx --eid {ebid} --pval 6 --oids /mnt/GDRIVE/GWAS/mediations.txt --keep-going --jobs 1 --batch &'
     print(shell)
