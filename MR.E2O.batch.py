@@ -197,7 +197,6 @@ if __name__ == '__main__':
             infos[ID] = [TRAIT, SN, Population]
        
     if opts.pop == None:
-        print(len(infos))
         race = infos[eid][2]
         if race in ['East Asian']:
             opts.pop = 'EAS'

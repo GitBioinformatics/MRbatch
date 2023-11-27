@@ -70,7 +70,7 @@ TRY <- try({
   if (is.na(N) || is.null(N) || N < 0) {
     f.data
   } else {
-    f.data
+    f.data <- f.data[f.data$F > Ffilter, ]
   }
 }, silent = FALSE)
 
