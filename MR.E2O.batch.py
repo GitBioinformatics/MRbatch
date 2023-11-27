@@ -32,7 +32,7 @@ import pandas as pd
 from optparse import OptionParser
 
 # BaiduSyncdisk BaiduNetdiskWorkspace
-# os.chdir('E:/BaiduSyncdisk/003.MPU/004.Batch.MR')
+os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
 
 def UsageInfo():
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                    help = 'python3 directory')
     opt.add_option('-m', '--mine',          dest = 'mine',         type = str,             default = '/analysis/Batch.MR/mine', 
                    help = 'self-definied scripts')
-    opt.add_option('--pop',                 dest = 'pop',          type = str,             default = 'EUR', 
+    opt.add_option('--pop',                 dest = 'pop',          type = str,
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
@@ -156,12 +156,12 @@ if __name__ == '__main__':
     
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
-        opts.info = 'G:/GWAS/IEU.GWAS-v2.xlsx'
-        opts.eid = 'bbj-a-2'
+        opts.info = 'G:/GWAS/IEU.GWAS-v2b.xlsx'
+        opts.eid = 'ebi-a-GCST003156'
         opts.out = 'G:/GWAS/IEU.GWAS.test'
         opts.out = 'G:/GWAS/IEU.GWAS.200'
         opts.outdir = 'G:/src.out/IEU.GWAS.E2O.out'
-        opts.oids = 'E:/BaiduSyncdisk/003.MPU/004.Batch.MR/test/outcomes.txt'
+        # opts.oids = 'E:/BaiduSyncdisk/003.MPU/004.Batch.MR/test/outcomes.txt'
         
     if not (opts.info and opts.eid and opts.out and opts.outdir):
         UsageInfo()
@@ -179,6 +179,34 @@ if __name__ == '__main__':
         pvlog = 7.30103
         pvint = 8
         
+    eid = opts.eid
+    efile = f'{opts.out}/{eid}.vcf.gz'
+    elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
+    erds = f'{opts.outdir}/{eid}/{eid}-LP.rds'
+    etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
+    DF = pd.read_excel(opts.info)
+    infos = {}
+    for index in DF.index:
+        ID = DF.loc[index, 'GWAS ID']
+        gz = f'{opts.out}/{ID}.vcf.gz'
+        if os.path.exists(gz):
+            SN = DF.loc[index, 'Sample size']
+            TRAIT = DF.loc[index, 'Trait']
+            Population = DF.loc[index, 'Population']
+            SN = int(SN) if isNumber(SN) else -1
+            infos[ID] = [TRAIT, SN, Population]
+       
+    if opts.pop == None:
+        race = infos[eid][2]
+        if race in ['East Asian']:
+            opts.pop = 'EAS'
+        elif race in ['European']:
+            opts.pop = 'EUR'
+        else:
+            opts.pop = 'EUR'
+
+    infos = {key: value for key, value in infos.items() if value[2] == race}
+        
     oidstmp = opts.oids
     if oidstmp != None:
         if os.path.exists(oidstmp):
@@ -186,7 +214,7 @@ if __name__ == '__main__':
         else:
             oids = [item.strip() for item in list(set(oidstmp.split(';'))) if item.strip() != '']
     else:
-        oids = []
+        oids = list(infos.keys())
     
     outcomestmp = os.listdir(opts.out)
     if len(oids) == 0:
@@ -194,21 +222,7 @@ if __name__ == '__main__':
     else:
         outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and outcome.rstrip('.vcf.gz') in oids and not outcome.rstrip('.vcf.gz') in [opts.eid]]
     
-    eid = opts.eid
-    efile = f'{opts.out}/{eid}.vcf.gz'
-    elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
-    erds = f'{opts.outdir}/{eid}/{eid}-LP.rds'
-    etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
-    DF = pd.read_excel(opts.info)
-    DF = DF[DF['Status'] == 'TRUE']
-    infos = {}
-    for index in DF.index:
-        ID = DF.loc[index, 'GWAS ID']
-        SN = DF.loc[index, 'Sample size']
-        TRAIT = DF.loc[index, 'Trait']
-        SN = int(SN) if isNumber(SN) else -1
-        infos[ID] = [TRAIT, SN]
-        
+
     if not os.path.exists(f'{opts.outdir}/{eid}'):
         os.makedirs(f'{opts.outdir}/{eid}')
     

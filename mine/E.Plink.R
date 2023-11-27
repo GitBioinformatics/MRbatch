@@ -39,7 +39,7 @@ if (PROD) {
   plink.d <- 'E:/BaiduNetdiskWorkspace/005.Bioinformatics/MRanalysis/www/bin'
   pval <- 5e-8
   pop <- 'EUR'
-  N <- 338903
+  N <- 33226
 }
 
 

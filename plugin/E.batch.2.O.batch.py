@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # BaiduNetdiskWorkspace BaiduSyncdisk
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
-        opts.eids = 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/exposures.txt'
+        opts.eids = 'E:/BaiduNetdiskWorkspace/005.Bioinformatics/SCI/NHB/.data/outcomes.txt'
         opts.out = 'G:/GWAS/IEU.GWAS.200'
 
     eidstmp = opts.eids
@@ -62,9 +62,11 @@ if __name__ == '__main__':
         exposures = [outcome.rstrip('.vcf.gz') for outcome in exposurestmp if outcome.endswith('.vcf.gz') and outcome.rstrip('.vcf.gz') in eids]
     
 
-step = 26
+step = 25
 ebatchs = [exposures[i:i + step] for i in range(0, len(exposures), step)]
 
-for ebid in ebatchs[0]:
-    shell = f'nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MR.E2O.batch.py --out /mnt/GDRIVE/GWAS/IEU.GWAS.200 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out --info /mnt/GDRIVE/GWAS/IEU.GWAS-v2.xlsx --eid {ebid} --pval 6 --oids /mnt/GDRIVE/GWAS/mediations.txt --keep-going --jobs 1 --batch &'
+for ebid in ebatchs[2]:
+    shell = f'nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MR.E2O.batch.py --out /mnt/GDRIVE/GWAS/IEU.GWAS.200 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out --info /mnt/GDRIVE/GWAS/IEU.GWAS-v2.xlsx --eid {ebid} --niv 5 --pval 6 --oids /mnt/GDRIVE/GWAS/exposures.txt --keep-going --jobs 1 --batch &'
     print(shell)
+    
+    
