@@ -63,6 +63,21 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --batch
 ```
 
+```shell
+# 2023-11-27
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.py \
+--out /mnt/GDRIVE/GWAS/EBI.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid ebi-a-GCST003156 \
+--pval 8 \
+--batch \
+--keep-going \
+--jobs 18 \
+--batch
+```
+
 # MR.O2E.batch (Outcome to Exposure)
 
 ```shell
