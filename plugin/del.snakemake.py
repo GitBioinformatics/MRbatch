@@ -32,11 +32,21 @@ import shutil
 wkdir = 'G:/src.out/IEU.GWAS.E2O.out/ebi-a-GCST003156'
 
 oids = [item for item in os.listdir(wkdir) if item.find('-') > -1]
-for oid in oids:
-    thisdir = f'{wkdir}/{oid}'
-    snakedir = f'{thisdir}/.snakemake'
-    gz = f'{thisdir}/{oid}-LP.vcf.gz'
-    if not os.path.exists(gz):
-        if os.path.exists(snakedir):
-            shutil.rmtree(snakedir)
+
+if False:
+    for oid in oids:
+        thisdir = f'{wkdir}/{oid}'
+        snakedir = f'{thisdir}/.snakemake'
+        gz = f'{thisdir}/{oid}-LP.vcf.gz'
+        if not os.path.exists(gz):
+            if os.path.exists(snakedir):
+                shutil.rmtree(snakedir)
+                print(oid)
+                
+if True:
+    for oid in oids:
+        thisdir = f'{wkdir}/{oid}'
+        gz = f'{thisdir}/{oid}-LP.vcf.gz'
+        if not os.path.exists(gz):
             print(oid)
+                

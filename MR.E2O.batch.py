@@ -28,6 +28,7 @@ This scripts writen by Albert丶XN
 
 import sys
 import os
+import re
 import pandas as pd
 from optparse import OptionParser
 
@@ -194,7 +195,7 @@ if __name__ == '__main__':
         gz = f'{opts.out}/{ID}.vcf.gz'
         if os.path.exists(gz):
             SN = DF.loc[index, 'Sample size']
-            TRAIT = DF.loc[index, 'Trait']
+            TRAIT = re.sub('"', "'", DF.loc[index, 'Trait'])
             Population = DF.loc[index, 'Population']
             SN = int(SN) if isNumber(SN) else -1
             infos[ID] = [TRAIT, SN, Population]
