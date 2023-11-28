@@ -47,8 +47,8 @@ if (PROD) {
   pval <- 5 * 10 ^ -as.integer(Args$pval)
   olp.file <- glue('{thisdir}/{oid}-LP.vcf.gz')
 } else {
-  e.file <- 'G:/src.out/IEU.GWAS.E2O.out/bbj-a-2/bbj-a-2-LP.rds'
-  o.file <- 'G:/src.out/IEU.GWAS.E2O.out/bbj-a-2/bbj-a-7/bbj-a-7-LP.vcf.gz'
+  e.file <- 'G:/src.out/P0DJD7.xlsx'
+  o.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-7.vcf.gz'
   e.name <- 'Body Fat Percentage'
   o.name <- 'Gastric Cancer'
   oid <- 'bbj-a-7'
@@ -59,7 +59,7 @@ if (PROD) {
 
 
 TRY <- try({
-  f.data <- readr::read_rds(e.file)
+  f.data <- openxlsx::read.xlsx(e.file)
   e.vcf.gz <- glue("{dirname(e.file)}/{gsub(pattern = '.rds', replacement = '.vcf.gz', x = basename(e.file), fixed = TRUE)}")
   
   if (Sys.info()['sysname'] == 'Linux') {
@@ -119,10 +119,6 @@ if (class(TRY) == "try-error") {
 } else {
   write.table(mr.odds, file = mrfile, sep = '\t', row.names = FALSE, quote = FALSE)
 }
-
-
-
-
 
 
 

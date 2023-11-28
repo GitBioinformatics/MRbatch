@@ -77,6 +77,23 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --batch
 ```
 
+# MR.E2O.batch.iv (Exposure to Outcome)
+
+```shell
+# Test
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv.py \
+--out /mnt/GDRIVE/GWAS/OpenGWAS.test \
+--outdir /mnt/GDRIVE/src.out/OpenGWAS.E2O2.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid P0DJD7 \
+--eif /mnt/GDRIVE/src.out/P0DJD7.xlsx \
+--pval 8 \
+--batch \
+--keep-going \
+--jobs 2
+```
+
 # MR.O2E.batch (Outcome to Exposure)
 
 ```shell

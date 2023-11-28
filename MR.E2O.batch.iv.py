@@ -29,12 +29,40 @@ This scripts writen by Albert丶XN
 import sys
 import os
 import re
+import gzip
+import shutil
 import pandas as pd
 from optparse import OptionParser
 
 # BaiduSyncdisk BaiduNetdiskWorkspace
 # os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
+
+
+vcfhear = '''
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency">
+##FORMAT=<ID=ES,Number=A,Type=Float,Description="Effect size estimate relative to the alternative allele">
+##FORMAT=<ID=SE,Number=A,Type=Float,Description="Standard error of effect size estimate">
+##FORMAT=<ID=LP,Number=A,Type=Float,Description="-log10 p-value for effect estimate">
+##FORMAT=<ID=AF,Number=A,Type=Float,Description="Alternate allele frequency in the association study">
+##FORMAT=<ID=SS,Number=A,Type=Float,Description="Sample size used to estimate genetic effect">
+##FORMAT=<ID=EZ,Number=A,Type=Float,Description="Z-score provided if it was used to derive the EFFECT and SE fields">
+##FORMAT=<ID=SI,Number=A,Type=Float,Description="Accuracy score of summary data imputation">
+##FORMAT=<ID=NC,Number=A,Type=Float,Description="Number of cases used to estimate genetic effect">
+##FORMAT=<ID=ID,Number=1,Type=String,Description="Study variant identifier">
+##META=<ID=TotalVariants,Number=1,Type=Integer,Description="Total number of variants in input">
+##META=<ID=VariantsNotRead,Number=1,Type=Integer,Description="Number of variants that could not be read">
+##META=<ID=HarmonisedVariants,Number=1,Type=Integer,Description="Total number of harmonised variants">
+##META=<ID=VariantsNotHarmonised,Number=1,Type=Integer,Description="Total number of variants that could not be harmonised">
+##META=<ID=SwitchedAlleles,Number=1,Type=Integer,Description="Total number of variants strand switched">
+##META=<ID=TotalControls,Number=1,Type=Integer,Description="Total number of controls in the association study">
+##META=<ID=TotalCases,Number=1,Type=Integer,Description="Total number of cases in the association study">
+##META=<ID=StudyType,Number=1,Type=String,Description="Type of GWAS study [Continuous or CaseControl]">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	%s
+'''
+
 
 def UsageInfo():
     ''' 
@@ -124,6 +152,8 @@ if __name__ == '__main__':
     opt = OptionParser()
     opt.add_option('-e', '--eid',           dest = 'eid',          type = str,
                    help = 'exposure id')
+    opt.add_option('-f', '--eif',           dest = 'eif',          type = str,
+                   help = 'exposure file')
     opt.add_option('-o', '--out',           dest = 'out',          type = str,
                    help = 'OpenGWAS outcome data directory')
     opt.add_option('--info',                dest = 'info',         type = str,
@@ -140,7 +170,7 @@ if __name__ == '__main__':
                    help = 'python3 directory')
     opt.add_option('-m', '--mine',          dest = 'mine',         type = str,             default = '/analysis/Batch.MR/mine', 
                    help = 'self-definied scripts')
-    opt.add_option('--pop',                 dest = 'pop',          type = str,
+    opt.add_option('--pop',                 dest = 'pop',          type = str,             default = 'EUR', 
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
@@ -160,14 +190,15 @@ if __name__ == '__main__':
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
         opts.info = 'G:/GWAS/IEU.GWAS-v2b.xlsx'
-        opts.eid = 'ebi-a-GCST003156'
+        opts.eid = 'P0DJD7'
+        opts.eif = 'G:/src.out/P0DJD7.xlsx'
         opts.out = 'G:/GWAS/IEU.GWAS.test'
         opts.out = 'G:/GWAS/IEU.GWAS.200'
         opts.outdir = 'G:/src.out/IEU.GWAS.E2O.out2'
         opts.exclude = 'G:/src.out/IEU.GWAS.E2O.out/ebi-a-GCST003156/.MR'
-        # opts.oids = 'E:/BaiduSyncdisk/003.MPU/004.Batch.MR/test/outcomes.txt'
+        opts.niv = 1
         
-    if not (opts.info and opts.eid and opts.out and opts.outdir):
+    if not (opts.info and opts.eid and opts.eif and opts.out and opts.outdir):
         UsageInfo()
         
     if int(opts.pval) == 8:
@@ -184,9 +215,9 @@ if __name__ == '__main__':
         pvint = 8
         
     eid = opts.eid
-    efile = f'{opts.out}/{eid}.vcf.gz'
+    eidfile = opts.eif
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
-    erds = f'{opts.outdir}/{eid}/{eid}-LP.rds'
+    erds = f'{opts.outdir}/{eid}/{eid}-LP.xlsx'
     etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
     DF = pd.read_excel(opts.info)
     infos = {}
@@ -201,15 +232,13 @@ if __name__ == '__main__':
             SN = int(SN) if isNumber(SN) else -1
             infos[ID] = [TRAIT, SN, Population]
        
-    if opts.pop == None:
-        race = infos[eid][2]
-        if race in ['East Asian']:
-            opts.pop = 'EAS'
-        elif race in ['European']:
-            opts.pop = 'EUR'
-        else:
-            opts.pop = 'EUR'
-
+    if opts.pop in ['EUR']:
+        race = 'European'
+    elif opts.pop in ['EAS']:
+        race = 'East Asian'
+    else:
+        race = 'European'
+        
     infos = {key: value for key, value in infos.items() if value[2] == race}
         
     oidstmp = opts.oids
@@ -234,29 +263,40 @@ if __name__ == '__main__':
     if not os.path.exists(f'{opts.outdir}/{eid}'):
         os.makedirs(f'{opts.outdir}/{eid}')
     
-    if not os.path.exists(elpfile) or not os.path.exists(etxt):
-        shell = f"{opts.bcftools} view -i 'LP>={pvlog}' {efile} -Oz -o {elpfile}"
-        if opts.batch and sys.platform.find('win') == -1:
-            print(shell); os.system(shell)
-        shell = f"{opts.bcftools} index -t {elpfile}"
-        if opts.batch and sys.platform.find('win') == -1:
-            print(shell); os.system(shell)
-            
-        shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint}"
-        if opts.batch and sys.platform.find('win') == -1:
-            print(shell); os.system(shell)
+    if not os.path.exists(elpfile):
+        EDF = pd.read_excel(eidfile)
+        file = open(elpfile.rstrip('.gz'), mode = 'w')
+        file.writelines(vcfhear.strip() % eid)
+        for index in EDF.index:
+            CHROM = '.'
+            POS = '.'
+            ID = EDF.loc[index, 'SNP']
+            REF = '.'
+            ALT = '.'
+            QUAL = 'PASS'
+            FILTER = '.'
+            INFO = '.'
+            FORMAT = '.'
+            SAMPLE = '.'
+            file.writelines(f'\n{CHROM}\t{POS}\t{ID}\t{REF}\t{ALT}\t{QUAL}\t{FILTER}\t{INFO}\t{FORMAT}\t{SAMPLE}')  
+        file.close()
     
-        if opts.batch and sys.platform.find('win') == -1:
-            EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
-            if n < opts.niv:
-                BREAK(n)
-            else:
-                print(f'一共有 {n} 个工具变量')
+        with open(elpfile.rstrip('.gz'), 'rb') as fin:
+            with gzip.open(elpfile, 'wb') as fout:
+                shutil.copyfileobj(fin, fout)
+            
+    pd.DataFrame([len(EDF)], columns = ['x']).to_csv(etxt, index = False)
+    if opts.batch and sys.platform.find('win') == -1:
+        EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
+        if n < opts.niv:
+            BREAK(n)
+        else:
+            print(f'一共有 {n} 个工具变量')
         
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
-    ename = infos[eid][0]
+    ename = eid
     for outcome in outcomes:
         oid = outcome.split('.')[0]
         shellFile = '%s/%s.s' % (odirs[oid], oid) 

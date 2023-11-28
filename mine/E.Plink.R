@@ -45,7 +45,7 @@ if (PROD) {
 
 TRY <- try({
   eid <- gsub(pattern = '.vcf.gz', replacement = '', x = basename(e.file), fixed = TRUE)
-  eofile <- glue('{dirname(e.file)}/{eid}.rds')
+  eofile <- glue('{dirname(e.file)}/{eid}.xlsx')
   eofilen <- glue('{dirname(e.file)}/{eid}.txt')
   
   vcfRT = readVcf(e.file)
@@ -75,10 +75,10 @@ TRY <- try({
 }, silent = FALSE)
 
 if (class(TRY) == "try-error") {
-  readr::write_rds(x = '', file = eofile)
+  openxlsx::write.xlsx(x = '', file = eofile)
   write.table(x = 0, file = eofilen, sep = '\t', row.names = FALSE, quote = FALSE)
 } else {
-  readr::write_rds(x = f.data, file = eofile)
+  openxlsx::write.xlsx(x = f.data, file = eofile)
   write.table(x = nrow(f.data), file = eofilen, sep = '\t', row.names = FALSE, quote = FALSE)
 }
 
