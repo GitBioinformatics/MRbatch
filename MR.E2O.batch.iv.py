@@ -284,15 +284,15 @@ if __name__ == '__main__':
         file.close()
     
         shell = f"bgzip {elpfile}"
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
                 
         shell = f"{opts.bcftools} index -t {elpfile}"
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
             
         pd.DataFrame([len(EDF)], columns = ['x']).to_csv(etxt, index = False)
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
             if n < opts.niv:
                 BREAK(n)

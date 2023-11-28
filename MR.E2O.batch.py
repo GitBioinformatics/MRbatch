@@ -237,17 +237,17 @@ if __name__ == '__main__':
     
     if not os.path.exists(elpfile) or not os.path.exists(etxt):
         shell = f"{opts.bcftools} view -i 'LP>={pvlog}' {efile} -Oz -o {elpfile}"
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
         shell = f"{opts.bcftools} index -t {elpfile}"
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
             
         shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint}"
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
     
-        if opts.batch and sys.platform.find('win') == -1:
+        if sys.platform.find('win') == -1:
             EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
             if n < opts.niv:
                 BREAK(n)
