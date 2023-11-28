@@ -270,11 +270,11 @@ if __name__ == '__main__':
         file = open(elpfile.rstrip('.gz'), mode = 'w')
         file.writelines(vcfhear.strip() % eid)
         for index in EDF.index:
-            CHROM = '.'
-            POS = '.'
+            CHROM = EDF.loc[index, 'chr.exposure']
+            POS = EDF.loc[index, 'pos.exposure']
             ID = EDF.loc[index, 'SNP']
-            REF = '.'
-            ALT = '.'
+            REF = EDF.loc[index, 'other_allele.exposure']
+            ALT = EDF.loc[index, 'effect_allele.exposure']
             QUAL = 'PASS'
             FILTER = '.'
             INFO = '.'
@@ -283,9 +283,9 @@ if __name__ == '__main__':
             file.writelines(f'\n{CHROM}\t{POS}\t{ID}\t{REF}\t{ALT}\t{QUAL}\t{FILTER}\t{INFO}\t{FORMAT}\t{SAMPLE}')  
         file.close()
     
-        with open(elpfile.rstrip('.gz'), 'rb') as fin:
-            with gzip.open(elpfile, 'wb') as fout:
-                shutil.copyfileobj(fin, fout)
+        shell = f"bgzip {elpfile}"
+        if opts.batch and sys.platform.find('win') == -1:
+            print(shell); os.system(shell)
                 
         shell = f"{opts.bcftools} index -t {elpfile}"
         if opts.batch and sys.platform.find('win') == -1:
