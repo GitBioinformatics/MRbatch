@@ -147,6 +147,8 @@ if __name__ == '__main__':
                    help = 'Minimum value of instrumental variables.')
     opt.add_option('--oids',                dest = 'oids',         type = str,
                    help = 'outcome ids')
+    opt.add_option('--exclude',             dest = 'exclude',         type = str,
+                   help = 'exclude ids')
     opt.add_option('--batch',               dest = 'batch',        action = 'store_true',  default = False, 
                    help = 'batch mode')
     opt.add_option('--keep-going',          dest = 'keep',         action = 'store_true',  default = False, 
@@ -160,7 +162,8 @@ if __name__ == '__main__':
         opts.eid = 'ebi-a-GCST003156'
         opts.out = 'G:/GWAS/IEU.GWAS.test'
         opts.out = 'G:/GWAS/IEU.GWAS.200'
-        opts.outdir = 'G:/src.out/IEU.GWAS.E2O.out'
+        opts.outdir = 'G:/src.out/IEU.GWAS.E2O.out2'
+        opts.exclude = 'G:/src.out/IEU.GWAS.E2O.out/ebi-a-GCST003156/.MR'
         # opts.oids = 'E:/BaiduSyncdisk/003.MPU/004.Batch.MR/test/outcomes.txt'
         
     if not (opts.info and opts.eid and opts.out and opts.outdir):
@@ -216,13 +219,16 @@ if __name__ == '__main__':
     else:
         oids = list(infos.keys())
     
+    if opts.exclude != None:
+        if os.path.exists(opts.exclude):
+            exids = [item.split('.')[0] for item in os.listdir(opts.exclude) if item.find('-') > -1 and item.endswith('.tsv')]
+            
     outcomestmp = os.listdir(opts.out)
     if len(oids) == 0:
-        outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and not outcome.rstrip('.vcf.gz') in [opts.eid]]
+        outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and not outcome.rstrip('.vcf.gz') in [opts.eid] and not outcome.rstrip('.vcf.gz') in exids]
     else:
-        outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and outcome.rstrip('.vcf.gz') in oids and not outcome.rstrip('.vcf.gz') in [opts.eid]]
-    
-
+        outcomes = [outcome for outcome in outcomestmp if outcome.endswith('.vcf.gz') and outcome.rstrip('.vcf.gz') in oids and not outcome.rstrip('.vcf.gz') in [opts.eid] and not outcome.rstrip('.vcf.gz') in exids]
+            
     if not os.path.exists(f'{opts.outdir}/{eid}'):
         os.makedirs(f'{opts.outdir}/{eid}')
     
