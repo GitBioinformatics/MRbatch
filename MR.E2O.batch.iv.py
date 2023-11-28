@@ -283,7 +283,7 @@ if __name__ == '__main__':
             file.writelines(f'\n{CHROM}\t{POS}\t{ID}\t{REF}\t{ALT}\t{QUAL}\t{FILTER}\t{INFO}\t{FORMAT}\t{SAMPLE}')  
         file.close()
     
-        shell = f"bgzip {elpfile}"
+        shell = f"bgzip {elpfile.rstrip('.gz')}"
         if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
                 
