@@ -286,6 +286,10 @@ if __name__ == '__main__':
         with open(elpfile.rstrip('.gz'), 'rb') as fin:
             with gzip.open(elpfile, 'wb') as fout:
                 shutil.copyfileobj(fin, fout)
+                
+        shell = f"{opts.bcftools} index -t {elpfile}"
+        if opts.batch and sys.platform.find('win') == -1:
+            print(shell); os.system(shell)
             
         pd.DataFrame([len(EDF)], columns = ['x']).to_csv(etxt, index = False)
         if opts.batch and sys.platform.find('win') == -1:
