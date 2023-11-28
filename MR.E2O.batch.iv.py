@@ -286,13 +286,13 @@ if __name__ == '__main__':
             with gzip.open(elpfile, 'wb') as fout:
                 shutil.copyfileobj(fin, fout)
             
-    pd.DataFrame([len(EDF)], columns = ['x']).to_csv(etxt, index = False)
-    if opts.batch and sys.platform.find('win') == -1:
-        EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
-        if n < opts.niv:
-            BREAK(n)
-        else:
-            print(f'一共有 {n} 个工具变量')
+        pd.DataFrame([len(EDF)], columns = ['x']).to_csv(etxt, index = False)
+        if opts.batch and sys.platform.find('win') == -1:
+            EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
+            if n < opts.niv:
+                BREAK(n)
+            else:
+                print(f'一共有 {n} 个工具变量')
         
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []

@@ -89,7 +89,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --eid P0DJD7 \
 --eif /mnt/GDRIVE/src.out/P0DJD7.xlsx \
 --pval 8 \
---batch \
+--niv 2 \
 --keep-going \
 --jobs 2
 ```
