@@ -221,6 +221,7 @@ if __name__ == '__main__':
     else:
         oids = list(infos.keys())
     
+    exids = []
     if opts.exclude != None:
         if os.path.exists(opts.exclude):
             exids = [item.split('.')[0] for item in os.listdir(opts.exclude) if item.find('-') > -1 and item.endswith('.tsv')]

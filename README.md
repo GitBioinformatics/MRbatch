@@ -83,7 +83,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 # Test
 /tools/Python-3.8.3/python \
 /analysis/Batch.MR/MR.E2O.batch.iv.py \
---out /mnt/GDRIVE/GWAS/OpenGWAS.test \
+--out /mnt/GDRIVE/GWAS/IEU.GWAS.test \
 --outdir /mnt/GDRIVE/src.out/OpenGWAS.E2O2.out \
 --info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
 --eid P0DJD7 \
