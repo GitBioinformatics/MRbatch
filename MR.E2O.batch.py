@@ -195,7 +195,8 @@ if __name__ == '__main__':
         gz = f'{opts.out}/{ID}.vcf.gz'
         if os.path.exists(gz):
             SN = DF.loc[index, 'Sample size']
-            TRAIT = re.sub('"', "'", DF.loc[index, 'Trait'])
+            TRAIT = str(DF.loc[index, 'Trait'])
+            TRAIT = re.sub('"', "'", TRAIT) if TRAIT.find('"') > -1 else TRAIT
             Population = DF.loc[index, 'Population']
             SN = int(SN) if isNumber(SN) else -1
             infos[ID] = [TRAIT, SN, Population]
