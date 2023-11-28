@@ -219,6 +219,7 @@ if __name__ == '__main__':
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
     erds = f'{opts.outdir}/{eid}/{eid}-LP.xlsx'
     etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
+    
     DF = pd.read_excel(opts.info)
     infos = {}
     for index in DF.index:
@@ -293,7 +294,9 @@ if __name__ == '__main__':
                 BREAK(n)
             else:
                 print(f'一共有 {n} 个工具变量')
-        
+    
+    shutil.copy(eidfile, erds)
+    
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
