@@ -59,7 +59,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --pval 8 \
 --batch \
 --keep-going \
---jobs 2 \
+--jobs 10 \
 --batch
 ```
 
@@ -96,7 +96,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 
 ```shell
 # 2023-11-28
-/tools/Python-3.8.3/python \
+nohup /tools/Python-3.8.3/python \
 /analysis/Batch.MR/MR.E2O.batch.iv.py \
 --out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
@@ -106,8 +106,8 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --pval 8 \
 --niv 2 \
 --keep-going \
---jobs 20 \
---batch
+--jobs 24 \
+--batch &
 ```
 
 # MR.O2E.batch (Outcome to Exposure)
