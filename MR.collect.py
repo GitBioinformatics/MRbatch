@@ -44,7 +44,10 @@ eid = os.path.basename(os.path.dirname(wkdir))
 DF = pd.DataFrame()
 
 if False:
-    for mr in mrs:
+    
+    
+    for index in range(len(mrs)):
+        mr = mrs[index]
         oid = mr.split('.')[0]
         mrf = os.path.join(wkdir, mr)
         if os.stat(mrf).st_size > 10:
@@ -72,12 +75,16 @@ if False:
                 pass
         else:
             print(mrf)
-            
+    
+        if index % 1000 == 0:
+            print(index)
+        
     DF = DF.loc[:, ['id.exposure', 'exposure', 'id.outcome', 'outcome', 'method', 'nsnp', 'b', 'se', 'pval', 'lo_ci', 'up_ci', 'or', 'or_lci95', 'or_uci95', 'Group']]
     
 if True:
     
-    for mr in mrs:
+    for index in range(len(mrs)):
+        mr = mrs[index]
         oid = mr.split('.')[0]
         mrf = os.path.join(wkdir, mr)
         if os.stat(mrf).st_size > 10:
@@ -88,9 +95,14 @@ if True:
                 DF = pd.concat([DF, DFtmp])
         else:
             print(mrf)
+        
+        if index % 1000 == 0:
+            print(index)
             
     DF = DF.loc[:, ['id.exposure', 'exposure', 'id.outcome', 'outcome', 'method', 'nsnp', 'b', 'se', 'pval', 'lo_ci', 'up_ci', 'or', 'or_lci95', 'or_uci95']]
     
-    
-DF.to_excel(f'C:/Users/Administrator/Desktop/MR-{eid}.xlsx', index = False)
 
+if sys.platform.find('win') > -1:
+    DF.to_excel(f'C:/Users/Administrator/Desktop/MR-{eid}.xlsx', index = False)
+else:
+    DF.to_excel(f'/mnt/GDRIVE/src.out/MR-{eid}.xlsx', index = False)
