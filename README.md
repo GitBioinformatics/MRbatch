@@ -106,8 +106,9 @@ nohup /tools/Python-3.8.3/python \
 --pval 8 \
 --niv 2 \
 --keep-going \
---jobs 24 \
---batch &
+--jobs 20 \
+--exclude /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out/P0DJD7/.MR \
+--batch
 ```
 
 # MR.O2E.batch (Outcome to Exposure)
