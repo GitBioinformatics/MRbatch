@@ -57,14 +57,18 @@ if (PROD) {
   mrfile <- glue('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/MR.out/{oid}.tsv')
 }
 
-
 TRY <- try({
   f.data <- openxlsx::read.xlsx(e.file)
   e.vcf.gz <- glue("{dirname(e.file)}/{gsub(pattern = '.xlsx', replacement = '.vcf.gz', x = basename(e.file), fixed = TRUE)}")
+  e.vi <- glue("{dirname(e.file)}/{gsub(pattern = '.xlsx', replacement = '.vi', x = basename(e.file), fixed = TRUE)}")
   
   if (Sys.info()['sysname'] == 'Linux') {
     system(glue('{bcftools.d} index -t {o.file}'), intern = FALSE)
-    system(glue('{bcftools.d} isec -n =2 -w 1 {o.file} {e.vcf.gz} -Oz -o {olp.file}'), intern = FALSE)
+    if (file.exists(e.vcf.gz)) {
+      system(glue('{bcftools.d} isec -n =2 -w 1 {o.file} {e.vcf.gz} -Oz -o {olp.file}'), intern = FALSE)
+    } else {
+      system(glue("{bcftools.d} view  -i 'ID=@{e.vi}' {o.file} -Oz -o {olp.file}"), intern = FALSE)
+    }
     o.file = olp.file
   } else {
     o.file = o.file

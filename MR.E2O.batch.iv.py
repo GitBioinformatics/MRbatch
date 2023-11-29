@@ -29,7 +29,6 @@ This scripts writen by Albert丶XN
 import sys
 import os
 import re
-import gzip
 import shutil
 import pandas as pd
 from optparse import OptionParser
@@ -216,7 +215,7 @@ if __name__ == '__main__':
         
     eid = opts.eid
     eidfile = opts.eif
-    elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
+    elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vi'
     erds = f'{opts.outdir}/{eid}/{eid}-LP.xlsx'
     etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
     
@@ -267,30 +266,10 @@ if __name__ == '__main__':
     
     if not os.path.exists(elpfile):
         EDF = pd.read_excel(eidfile)
-        file = open(elpfile.rstrip('.gz'), mode = 'w')
-        file.writelines(vcfhear.strip() % eid)
-        for index in EDF.index:
-            CHROM = EDF.loc[index, 'chr.exposure']
-            POS = EDF.loc[index, 'pos.exposure']
-            ID = EDF.loc[index, 'SNP']
-            REF = EDF.loc[index, 'other_allele.exposure']
-            ALT = EDF.loc[index, 'effect_allele.exposure']
-            QUAL = 'PASS'
-            FILTER = '.'
-            INFO = '.'
-            FORMAT = '.'
-            SAMPLE = '.'
-            file.writelines(f'\n{CHROM}\t{POS}\t{ID}\t{REF}\t{ALT}\t{QUAL}\t{FILTER}\t{INFO}\t{FORMAT}\t{SAMPLE}')  
+        file = open(elpfile, mode = 'w')
+        file.writelines('\n'.join(list(set(EDF['SNP']))))
         file.close()
     
-        shell = f"bgzip {elpfile.rstrip('.gz')}"
-        if sys.platform.find('win') == -1:
-            print(shell); os.system(shell)
-                
-        shell = f"{opts.bcftools} index -t {elpfile}"
-        if sys.platform.find('win') == -1:
-            print(shell); os.system(shell)
-            
         pd.DataFrame([len(EDF)], columns = ['x']).to_csv(etxt, index = False)
         if sys.platform.find('win') == -1:
             EF = pd.read_csv(etxt); n = EF.loc[0, 'x']
