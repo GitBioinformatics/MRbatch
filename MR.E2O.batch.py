@@ -192,7 +192,7 @@ if __name__ == '__main__':
     eid = opts.eid
     efile = f'{opts.out}/{eid}.vcf.gz'
     elpfile = f'{opts.outdir}/{eid}/{eid}-LP.vcf.gz'
-    erds = f'{opts.outdir}/{eid}/{eid}-LP.rds'
+    erds = f'{opts.outdir}/{eid}/{eid}-LP.xlsx'
     etxt = f'{opts.outdir}/{eid}/{eid}-LP.txt'
     DF = pd.read_excel(opts.info)
     infos = {}
