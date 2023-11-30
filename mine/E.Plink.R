@@ -18,6 +18,8 @@ if (PROD) {
     'efile', 'e', 1, 'character', 'exposure file',
     'plinkd', 'x', 1, 'character', 'plink',
     'pval', 'v', 1, 'integer', 'pval',
+    'r2', 'r', 1, 'integer', 'r2',
+    'kb', 'k', 1, 'integer', 'kb',
     
     'sn', 'n', 1, 'integer', 'sample number',
     'pop', 'p', 1, 'character', 'pop type'),
@@ -25,7 +27,7 @@ if (PROD) {
     ncol = 5)
   Args = getopt(command)
   
-  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$plinkd) || is.null(Args$pval) || is.null(Args$pop) || is.null(Args$sn)) {
+  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$plinkd) || is.null(Args$pval) || is.null(Args$r2)  || is.null(Args$kb)  || is.null(Args$pop) || is.null(Args$sn)) {
     cat(paste(getopt(command, usage = TRUE), "\n"))
     q( status = 1)
   }
@@ -34,12 +36,16 @@ if (PROD) {
   pop <- Args$pop
   pval <- 5 * 10 ^ -as.integer(Args$pval)
   N <- as.integer(Args$sn)
+  r2 <- as.integer(Args$r2)
+  kb <- as.integer(Args$kb)
 } else {
   e.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-2.vcf.gz'
   plink.d <- 'E:/BaiduNetdiskWorkspace/005.Bioinformatics/MRanalysis/www/bin'
   pval <- 5e-8
   pop <- 'EUR'
   N <- 33226
+  r2 <- 0.001
+  kb <- 10000
 }
 
 
@@ -53,8 +59,8 @@ TRY <- try({
   e.data = subset(e.data, pval.exposure < pval)
   
   c.data <- ieugwasr::ld_clump(
-    clump_kb = 10000,
-    clump_r2 = 0.001,
+    clump_kb = kb,
+    clump_r2 = r2,
     clump_p = 0.99,
     pop = pop,
     dplyr::tibble(rsid = e.data$SNP, pval = e.data$pval.exposure, id = e.data$id.exposure),

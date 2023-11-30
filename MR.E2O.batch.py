@@ -144,6 +144,10 @@ if __name__ == '__main__':
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
+    opt.add_option('--r2',                  dest = 'r2',           type = float,           default = 0.001, 
+                   help = '0.001')
+    opt.add_option('--kb',                  dest = 'kb',           type = int,             default = 10000, 
+                   help = '10000')
     opt.add_option('--niv',                 dest = 'niv',          type = int,             default = 5, 
                    help = 'Minimum value of instrumental variables.')
     opt.add_option('--oids',                dest = 'oids',         type = str,
@@ -243,7 +247,7 @@ if __name__ == '__main__':
         if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
             
-        shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint}"
+        shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint} --r2 {opts.r2} --kb {opts.kb}"
         if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
     
