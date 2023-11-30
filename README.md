@@ -89,6 +89,9 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --pval 8 \
 --keep-going \
 --jobs 24 \
+--r2 0.01 \
+--kb 500 \
+--fs F \
 --batch
 ```
 

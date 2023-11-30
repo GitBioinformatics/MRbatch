@@ -148,6 +148,8 @@ if __name__ == '__main__':
                    help = '0.001')
     opt.add_option('--kb',                  dest = 'kb',           type = int,             default = 10000, 
                    help = '10000')
+    opt.add_option('--fs',                  dest = 'fs',           type = str,             default = 'T', 
+                   help = 'T or F')
     opt.add_option('--niv',                 dest = 'niv',          type = int,             default = 5, 
                    help = 'Minimum value of instrumental variables.')
     opt.add_option('--oids',                dest = 'oids',         type = str,
@@ -247,7 +249,7 @@ if __name__ == '__main__':
         if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
             
-        shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint} --r2 {opts.r2} --kb {opts.kb}"
+        shell = f"{opts.Rscript} {opts.mine}/E.Plink.R --efile {elpfile} --plinkd {opts.plink} --sn {infos[eid][1]} --pop {opts.pop} --pval {pvint} --r2 {opts.r2} --kb {opts.kb} --FS {opts.fs}"
         if sys.platform.find('win') == -1:
             print(shell); os.system(shell)
     
