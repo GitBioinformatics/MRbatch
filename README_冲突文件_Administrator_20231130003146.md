@@ -59,7 +59,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --pval 8 \
 --batch \
 --keep-going \
---jobs 10 \
+--jobs 2 \
 --batch
 ```
 
@@ -74,21 +74,6 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --pval 8 \
 --keep-going \
 --jobs 18 \
---batch
-```
-
-```shell
-# 2023-11-30
-/tools/Python-3.8.3/python \
-/analysis/Batch.MR/MR.E2O.batch.py \
---out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
---outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
---info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
---eid ebi-a-GCST003156 \
---oids /mnt/GDRIVE/src.out/id.outcomes.txt \
---pval 8 \
---keep-going \
---jobs 24 \
 --batch
 ```
 
@@ -111,7 +96,7 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 
 ```shell
 # 2023-11-28
-nohup /tools/Python-3.8.3/python \
+/tools/Python-3.8.3/python \
 /analysis/Batch.MR/MR.E2O.batch.iv.py \
 --out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
