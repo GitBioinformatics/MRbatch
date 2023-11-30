@@ -18,7 +18,7 @@ if (PROD) {
     'efile', 'e', 1, 'character', 'exposure file',
     'plinkd', 'x', 1, 'character', 'plink',
     'pval', 'v', 1, 'integer', 'pval',
-    'r2', 'r', 1, 'integer', 'r2',
+    'r2', 'r', 1, 'numeric', 'r2',
     'kb', 'k', 1, 'integer', 'kb',
     'FS', 'f', 1, 'character', 'F-statistics',
     
