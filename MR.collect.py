@@ -30,8 +30,9 @@ import os
 import sys
 import pandas as pd
 
-eid = 'ebi-a-GCST003156'
 eid = 'P0DJD7'
+eid = 'ebi-a-GCST003156'
+
 
 if sys.platform.find('win') > -1:
     wkdir = f'G:/src.out/IEU.GWAS.E2O.out/{eid}/.MR'
@@ -43,8 +44,7 @@ mrs = os.listdir(wkdir)
 eid = os.path.basename(os.path.dirname(wkdir))
 DF = pd.DataFrame()
 
-if False:
-    
+if True:
     
     for index in range(len(mrs)):
         mr = mrs[index]
@@ -81,7 +81,7 @@ if False:
         
     DF = DF.loc[:, ['id.exposure', 'exposure', 'id.outcome', 'outcome', 'method', 'nsnp', 'b', 'se', 'pval', 'lo_ci', 'up_ci', 'or', 'or_lci95', 'or_uci95', 'Group']]
     
-if True:
+if False:
     
     for index in range(len(mrs)):
         mr = mrs[index]

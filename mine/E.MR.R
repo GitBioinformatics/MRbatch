@@ -47,7 +47,7 @@ if (PROD) {
   pval <- 5 * 10 ^ -as.integer(Args$pval)
   olp.file <- glue('{thisdir}/{oid}-LP.vcf.gz')
 } else {
-  e.file <- 'G:/src.out/P0DJD7.xlsx'
+  e.file <- 'C:/Users/p2314405/Desktop/ebi-a-GCST003156-LP.xlsx'
   o.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-7.vcf.gz'
   e.name <- 'Body Fat Percentage'
   o.name <- 'Gastric Cancer'

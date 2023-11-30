@@ -1,4 +1,4 @@
-options(stringsAsFactors = FALSE, warn = -1, scipen = 200)
+options(stringsAsFactors = FALSE, warn = -1, scipen = 10)
 suppressMessages(library(glue))
 suppressMessages(library(dplyr))
 suppressMessages(library(getopt))
@@ -37,7 +37,7 @@ if (PROD) {
   pop <- Args$pop
   pval <- 5 * 10 ^ -as.integer(Args$pval)
   N <- as.integer(Args$sn)
-  r2 <- as.integer(Args$r2)
+  r2 <- as.numeric(Args$r2)
   kb <- as.integer(Args$kb)
   FS <- as.logical(Args$FS)
 } else {
@@ -68,7 +68,7 @@ TRY <- try({
     pop = pop,
     dplyr::tibble(rsid = e.data$SNP, pval = e.data$pval.exposure, id = e.data$id.exposure),
     plink_bin = ifelse(test = Sys.info()['sysname'] == 'Linux', yes = glue('{plink.d}/plink'), no = glue('{plink.d}/plink.exe')),
-    bfile = glue('{plink.d}/1kg.v3/EUR')
+    bfile = glue('{plink.d}/1kg.v3/{pop}')
   )
   
   e.data <- base::merge(e.data, c.data, by.x = 'SNP', by.y = 'rsid') %>% dplyr::select(-pval, -id)

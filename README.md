@@ -95,6 +95,22 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --batch
 ```
 
+```shell
+# 2023-11-30
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.py \
+--out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid ukb-b-8961 \
+--pval 8 \
+--keep-going \
+--jobs 24 \
+--batch
+```
+
+
+
 # MR.E2O.batch.iv (Exposure to Outcome)
 
 ```shell
