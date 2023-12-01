@@ -86,6 +86,8 @@ if (as.integer(a.pval) == 8) {
   b.pval = 6.30103
 } else if (as.integer(a.pval) == 6) {
   b.pval = 5.30103
+} else if (as.integer(a.pval) == 5) {
+  b.pval = 4.30103
 } else {
   b.pval = 7.30103
 }

@@ -77,7 +77,7 @@ def BREAK(n):
     ''' 
 
     '''
-    INFO = f'一共有 {n} 个工具变量，数量过少（≤10） '
+    INFO = f'一共有 {n} 个工具变量，数量过少'
     print(INFO)
     exit(1)
 
@@ -178,12 +178,15 @@ if __name__ == '__main__':
     if int(opts.pval) == 8:
         pvlog = 7.30103
         pvint = 8
-    if int(opts.pval) == 7:
+    elif int(opts.pval) == 7:
         pvlog = 6.30103
         pvint = 7
-    if int(opts.pval) == 6:
+    elif int(opts.pval) == 6:
         pvlog = 5.30103
         pvint = 6
+    elif int(opts.pval) == 5:
+        pvlog = 4.30103
+        pvint = 5
     else:
         pvlog = 7.30103
         pvint = 8

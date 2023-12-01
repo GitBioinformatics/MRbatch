@@ -114,6 +114,23 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --batch
 ```
 
+```shell
+# 2023-11-30
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.py \
+--out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid ukb-b-8961 \
+--pval 5 \
+--keep-going \
+--jobs 24 \
+--r2 0.001 \
+--kb 10000 \
+--fs T \
+--batch
+```
+
 # MR.E2O.batch.iv (Exposure to Outcome)
 
 ```shell
@@ -165,17 +182,20 @@ nohup /tools/Python-3.8.3/python \
 --batch &
 ```
 
-
-
 # MR.O2E.batch (Outcome to Exposure)
 
 ```shell
 # Test
+
+```
+
+```shell
+# 2023-12-01
 /tools/Python-3.8.3/python \
 /analysis/Batch.MR/MR.O2E.batch.py \
---input /mnt/GDRIVE/GWAS/OpenGWAS.test \
---outdir /mnt/GDRIVE/src.out/OpenGWAS.O2E.out \
---info /mnt/GDRIVE/GWAS/OpenGWAS-Checked.xlsx \
+--input /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
 --oid ieu-b-40 \
 --pval 8 \
 --batch \
