@@ -153,7 +153,7 @@ This scripts writen by Albert丶XN
         return commond
     
     
-    def AddEnvPATHO2E(self, eid, efile, ename, ofile, oname, samplen, outdir, pop, verbose = True):
+    def AddEnvPATHO2E(self, eid, efile, ename, oid, ofile, oname, pval, r2, kb, fs, samplen, outdir, pop, verbose = True):
         '''
         
         @: PGSBGI.SE50
@@ -169,6 +169,11 @@ This scripts writen by Albert丶XN
         commond += 'OFILE = "%s"' % ofile; commond += '\n'
         commond += 'ONAME = "%s"' % oname; commond += '\n'
         commond += 'EID = "%s"' % eid; commond += '\n'
+        commond += 'OID = "%s"' % oid; commond += '\n'
+        commond += 'PVAL = "%s"' % pval; commond += '\n'
+        commond += 'R2 = "%s"' % r2; commond += '\n'
+        commond += 'KB = "%s"' % kb; commond += '\n'
+        commond += 'FS = "%s"' % fs; commond += '\n'
         commond += 'POP = "%s"' % pop; commond += '\n'
         commond += 'SAMPLEN = "%s"' % samplen; commond += '\n'
         
@@ -188,7 +193,7 @@ This scripts writen by Albert丶XN
         return commond
     
     
-    def AddEnvPATHE2O(self, oid, efile, ename, ofile, oname, pval, outdir, verbose = True):
+    def AddEnvPATHE2O(self, eid, oid, efile, ename, ofile, oname, pval, outdir, verbose = True):
         '''
         
         @: PGSBGI.SE50
@@ -203,6 +208,7 @@ This scripts writen by Albert丶XN
         commond += 'ENAME = "%s"' % ename; commond += '\n'
         commond += 'OFILE = "%s"' % ofile; commond += '\n'
         commond += 'ONAME = "%s"' % oname; commond += '\n'
+        commond += 'EID = "%s"' % eid; commond += '\n'
         commond += 'OID = "%s"' % oid; commond += '\n'
         commond += 'PVAL = "%s"' % pval; commond += '\n'
         
@@ -283,7 +289,7 @@ rule EMR:
 		mrfile = r'{OUTDIR}/.MR/{OID}.tsv'.format(**locals())
 	shell:
 		r'''
-		{RSCRIPT} {MINE}/E.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --mrfile {output.mrfile} --pval {PVAL}
+		{RSCRIPT} {MINE}/E.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --eid {EID} --oid {OID} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --mrfile {output.mrfile} --pval {PVAL}
 		'''
         """
         
@@ -298,12 +304,12 @@ rule EMR:
         commond += """
 rule OMR:
 	input:
-		ofile = r'{OFILE}'.format(**locals())
+		ifile = r'{IFILE}'.format(**locals())
 	output:
 		mrfile = r'{OUTDIR}/.MR/{OID}.tsv'.format(**locals())
 	shell:
 		r'''
-		{RSCRIPT} {MINE}/O.MR.R --efile "{EFILE}" --ofile "{input.ofile}" --ename "{ENAME}" --oname "{ONAME}" --oid {OID} --plinkd {PLINK} --bcftoolsd {BCFTOOLS} --thisdir {OUTDIR}/{OID} --pop {POP} --sn {SAMPLEN} --mrfile {output.mrfile}
+		{RSCRIPT} {MINE}/O.MR.R --efile "{input.Ifile}" --ofile "{OFILE}" --ename "{ENAME}" --oname "{ONAME}" --eid {EID} --oid {OID} --plinkd {PLINK} --bcftoolsd {BCFTOOLS} --pval {PVAL} --r2 {R2} --kb {KB} --FS "{FS}" --pop {POP} --thisdir {OUTDIR}/{EID} --sn {SAMPLEN} --mrfile {output.mrfile}
 		'''
         """
         

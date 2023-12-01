@@ -31,7 +31,7 @@ import sys
 import pandas as pd
 
 eid = 'P0DJD7'
-eid = 'ebi-a-GCST003156'
+eid = 'ebi-a-GCST90038694'
 
 
 if sys.platform.find('win') > -1:

@@ -28,10 +28,11 @@ This scripts writen by Albert丶XN
 
 import sys
 import os
+import re
 import pandas as pd
 from optparse import OptionParser
 
-# os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
+os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
 
 def UsageInfo():
@@ -137,12 +138,22 @@ if __name__ == '__main__':
                    help = 'python3 directory')
     opt.add_option('-m', '--mine',          dest = 'mine',         type = str,             default = '/analysis/Batch.MR/mine', 
                    help = 'self-definied scripts')
-    opt.add_option('--pop',                 dest = 'pop',          type = str,             default = 'EUR', 
+    opt.add_option('--pop',                 dest = 'pop',          type = str,
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
+    opt.add_option('--r2',                  dest = 'r2',           type = float,           default = 0.001, 
+                   help = '0.001')
+    opt.add_option('--kb',                  dest = 'kb',           type = int,             default = 10000, 
+                   help = '10000')
+    opt.add_option('--fs',                  dest = 'fs',           type = str,             default = 'T', 
+                   help = 'T or F')
     opt.add_option('--niv',                 dest = 'niv',          type = int,             default = 5, 
                    help = 'Minimum value of instrumental variables.')
+    opt.add_option('--eids',                dest = 'eids',         type = str,
+                   help = 'exposure ids')
+    opt.add_option('--exclude',             dest = 'exclude',      type = str,
+                   help = 'exclude ids')
     opt.add_option('--batch',               dest = 'batch',        action = 'store_true',  default = False, 
                    help = 'batch mode')
     opt.add_option('--keep-going',          dest = 'keep',         action = 'store_true',  default = False, 
@@ -152,13 +163,17 @@ if __name__ == '__main__':
     
     (opts, args) = opt.parse_args()
     if sys.platform.find('win') > -1:
-        opts.info = 'G:/GWAS/OpenGWAS-Checked.xlsx'
+        opts.info = 'G:/GWAS/IEU.GWAS-v2b.xlsx'
         opts.oid = 'ukb-b-15541'
-        opts.input = 'G:/GWAS/OpenGWAS.test'
-        opts.outdir = 'G:/src.out/OpenGWAS.O2E.out'
+        opts.input = 'G:/GWAS/IEU.GWAS.200'
+        opts.input = 'G:/GWAS//IEU.GWAS.test'
+        opts.outdir = 'G:/src.out/IEU.GWAS.O2E.out2'
         
     if not (opts.info and opts.oid and opts.input and opts.outdir):
         UsageInfo()
+        
+    oid = opts.oid
+    ofile = f'{opts.input}/{oid}.vcf.gz'
         
     if int(opts.pval) == 8:
         pvlog = 7.30103
@@ -173,21 +188,48 @@ if __name__ == '__main__':
         pvlog = 7.30103
         pvint = 8
         
-    exposures = os.listdir(opts.input)
-    exposures = [exposure for exposure in exposures if exposure.endswith('.vcf.gz')]
-    oid = opts.oid
-    ofile = f'{opts.input}/{oid}.vcf.gz'
-    
     DF = pd.read_excel(opts.info)
-    DF = DF[DF['Status'] == 'TRUE']
     infos = {}
     for index in DF.index:
         ID = DF.loc[index, 'GWAS ID']
-        SN = DF.loc[index, 'Sample size']
-        TRAIT = DF.loc[index, 'Trait']
-        SN = int(SN) if isNumber(SN) else -1
-        infos[ID] = [TRAIT, SN]
+        gz = f'{opts.input}/{ID}.vcf.gz'
+        if os.path.exists(gz):
+            SN = DF.loc[index, 'Sample size']
+            TRAIT = str(DF.loc[index, 'Trait'])
+            TRAIT = re.sub('"', "'", TRAIT) if TRAIT.find('"') > -1 else TRAIT
+            Population = DF.loc[index, 'Population']
+            SN = int(SN) if isNumber(SN) else -1
+            infos[ID] = [TRAIT, SN, Population]
         
+    if opts.pop in ['EUR']:
+        race = 'European'
+    elif opts.pop in ['EAS']:
+        race = 'East Asian'
+    else:
+        race = 'European'
+        
+    infos = {key: value for key, value in infos.items() if value[2] == race}
+    
+    eidstmp = opts.eids
+    if eidstmp != None:
+        if os.path.exists(eidstmp):
+            eids = [item.strip() for item in list(set(pd.read_csv(eidstmp, header = None)[0])) if item.strip() != '']
+        else:
+            eids = [item.strip() for item in list(set(eidstmp.split(';'))) if item.strip() != '']
+    else:
+        eids = list(infos.keys())
+    
+    exids = []
+    if opts.exclude != None:
+        if os.path.exists(opts.exclude):
+            exids = [item.split('.')[0] for item in os.listdir(opts.exclude) if item.find('-') > -1 and item.endswith('.tsv')]
+            
+    exposurestmp = os.listdir(opts.input)
+    if len(eids) == 0:
+        exposures = [exposure for exposure in exposurestmp if exposure.endswith('.vcf.gz') and not exposure.rstrip('.vcf.gz') in [opts.oid] and not exposure.rstrip('.vcf.gz') in exids]
+    else:
+        exposures = [exposure for exposure in exposurestmp if exposure.endswith('.vcf.gz') and exposure.rstrip('.vcf.gz') in eids and not exposure.rstrip('.vcf.gz') in [opts.oid] and not exposure.rstrip('.vcf.gz') in exids]
+            
     if not os.path.exists(f'{opts.outdir}/{oid}'):
         os.makedirs(f'{opts.outdir}/{oid}')
     
@@ -200,30 +242,30 @@ if __name__ == '__main__':
         shellFile = '%s/%s.s' % (odirs[eid], eid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHO2E(eid = eid, efile = os.path.join(opts.input, exposure), ename = infos[eid][0], ofile = ofile, oname = oname, samplen = infos[eid][1], outdir = f'{opts.outdir}/{oid}', pop = opts.pop)) 
+        SH.write(CS.AddEnvPATHO2E(eid = eid, efile = os.path.join(opts.input, exposure), ename = infos[eid][0], oid = oid, ofile = ofile, oname = oname, pval = pvint, r2 = opts.r2, kb = opts.kb, fs = opts.fs, samplen = infos[eid][1], outdir = f'{opts.outdir}/{oid}', pop = opts.pop)) 
         SH.write(CS.allO2E())
         SH.write(CS.OMR())
         SH.write(CS.done())
         SH.close()
-        batchs.append(oid)
+        batchs.append(eid)
         
-    if not os.path.exists(f'{opts.outdir}/{eid}/.MR'):
-        os.mkdir(f'{opts.outdir}/{eid}/.MR')
+    if not os.path.exists(f'{opts.outdir}/{oid}/.MR'):
+        os.makedirs(f'{opts.outdir}/{oid}/.MR')
 
-    if not os.path.exists(f'{opts.outdir}/{eid}/.done'):
-        os.mkdir(f'{opts.outdir}/{eid}/.done')
+    if not os.path.exists(f'{opts.outdir}/{oid}/.done'):
+        os.makedirs(f'{opts.outdir}/{oid}/.done')
 
-    snakefile = '%s/%s/%s.s' % (opts.outdir, eid, 'batch') 
+    snakefile = '%s/%s/%s.s' % (opts.outdir, oid, 'batch') 
     SH = open(snakefile, mode = 'w', encoding = 'utf-8')
-    SH.write(CS.batch(ids = batchs, outdir = opts.outdir, eid = eid))
+    SH.write(CS.batch(ids = batchs, outdir = opts.outdir, eid = oid))
     SH.close()
     if opts.batch and sys.platform.find('win') == -1:
         snakemake = '%s/bin/snakemake' % opts.python3
-        nohup = '%s/%s/.nohup'  % (opts.outdir, eid)
+        nohup = '%s/%s/.nohup'  % (opts.outdir, oid)
         if opts.keep:
-            shell = 'cd %s/%s && nohup %s --snakefile %s --jobs %s --keep-going > %s 2>&1' % (opts.outdir, eid, snakemake, snakefile, opts.jobs, nohup)
+            shell = 'cd %s/%s && nohup %s --snakefile %s --jobs %s --keep-going > %s 2>&1' % (opts.outdir, oid, snakemake, snakefile, opts.jobs, nohup)
         else:
-            shell = 'cd %s/%s && nohup %s --snakefile %s --jobs %s > %s 2>&1' % (opts.outdir, eid, snakemake, snakefile, opts.jobs, nohup)
+            shell = 'cd %s/%s && nohup %s --snakefile %s --jobs %s > %s 2>&1' % (opts.outdir, oid, snakemake, snakefile, opts.jobs, nohup)
         print('RUN', shell); os.system(shell)
 
 

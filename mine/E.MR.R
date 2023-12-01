@@ -1,4 +1,4 @@
-options(stringsAsFactors = FALSE, warn = -1, scipen = 200)
+options(stringsAsFactors = FALSE, warn = -1, scipen = 10)
 suppressMessages(library(glue))
 suppressMessages(library(dplyr))
 suppressMessages(library(getopt))
@@ -16,23 +16,24 @@ if (Sys.info()['sysname'] == 'Linux') {
 if (PROD) {
   command = matrix(c( 
     'help', 'h', 0, 'loical', '帮助文档',
-    'efile', 'e', 1, 'character', 'exposure file',
-    'ofile', 'o', 1, 'character', 'outcome file',
-    'ename', 'f', 1, 'character', 'exposure name',
-    'oname', 'p', 1, 'character', 'outcome name',
-    'oid', 'q', 1, 'character', 'outcome id',
-    'plinkd', 'x', 1, 'character', 'plink',
-    'bcftoolsd', 'y', 1, 'character', 'bcftools',
-    'pval', 'a', 1, 'integer', 'pval',
+    'efile', 'efile', 1, 'character', 'exposure file',
+    'ofile', 'ofile', 1, 'character', 'outcome file',
+    'ename', 'ename', 1, 'character', 'exposure name',
+    'oname', 'oname', 1, 'character', 'outcome name',
+    'eid', 'eid', 1, 'character', 'exposure id',
+    'oid', 'oid', 1, 'character', 'outcome id',
+    'plinkd', 'plinkd', 1, 'character', 'plink',
+    'bcftoolsd', 'bcftoolsd', 1, 'character', 'bcftools',
+    'pval', 'pval', 1, 'integer', 'pval',
     
-    'thisdir', 'v', 1, 'character', 'thisdir',
-    'sn', 'n', 1, 'integer', 'sample number',
-    'mrfile', 'u', 1, 'character', 'mrfile'),
+    'thisdir', 'thisdir', 1, 'character', 'thisdir',
+    'sn', 'sn', 1, 'integer', 'sample number',
+    'mrfile', 'mrfile', 1, 'character', 'mrfile'),
     byrow = TRUE,
     ncol = 5)
   Args = getopt(command)
   
-  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$ofile) || is.null(Args$pval) || is.null(Args$ename) || is.null(Args$oname) || is.null(Args$oid) || is.null(Args$bcftoolsd) || is.null(Args$mrfile) || is.null(Args$thisdir)) {
+  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$ofile) || is.null(Args$pval) || is.null(Args$ename) || is.null(Args$oname) || is.null(Args$eid) || is.null(Args$oid) || is.null(Args$bcftoolsd) || is.null(Args$mrfile) || is.null(Args$thisdir)) {
     cat(paste(getopt(command, usage = TRUE), "\n"))
     q( status = 1)
   }
@@ -40,6 +41,7 @@ if (PROD) {
   o.file <- Args$ofile
   e.name <- Args$ename
   o.name <- Args$oname
+  eid <- Args$eid
   oid <- Args$oid
   bcftools.d <- Args$bcftoolsd
   mrfile <- Args$mrfile
@@ -51,6 +53,7 @@ if (PROD) {
   o.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-7.vcf.gz'
   e.name <- 'Body Fat Percentage'
   o.name <- 'Gastric Cancer'
+  eid <- 'ebi-a-GCST003156'
   oid <- 'bbj-a-7'
   bcftools.d <- '/tools/bcftools-1.18/bcftools'
   pval <- 5e-8
@@ -121,6 +124,8 @@ TRY <- try({
 if (class(TRY) == "try-error") {
   write.table('', file = mrfile, sep = '\t', row.names = FALSE, quote = FALSE, col.names = FALSE)
 } else {
+  mr.odds$id.exposure <- eid
+  mr.odds$id.outcome <- oid
   write.table(mr.odds, file = mrfile, sep = '\t', row.names = FALSE, quote = FALSE)
 }
 

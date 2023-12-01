@@ -1,4 +1,4 @@
-options(stringsAsFactors = FALSE, warn = -1, scipen = 200)
+options(stringsAsFactors = FALSE, warn = -1, scipen = 10)
 suppressMessages(library(glue))
 suppressMessages(library(dplyr))
 suppressMessages(library(getopt))
@@ -16,23 +16,29 @@ if (Sys.info()['sysname'] == 'Linux') {
 if (PROD) {
   command = matrix(c( 
     'help', 'h', 0, 'loical', '帮助文档',
-    'efile', 'e', 1, 'character', 'exposure file',
-    'ofile', 'o', 1, 'character', 'outcome file',
-    'ename', 'f', 1, 'character', 'exposure name',
-    'oname', 'p', 1, 'character', 'outcome name',
-    'oid', 'q', 1, 'character', 'outcome id',
-    'plinkd', 'x', 1, 'character', 'plink',
-    'bcftoolsd', 'y', 1, 'character', 'bcftools',
+    'efile', 'efile', 1, 'character', 'exposure file',
+    'ofile', 'ofile', 1, 'character', 'outcome file',
+    'ename', 'ename', 1, 'character', 'exposure name',
+    'oname', 'oname', 1, 'character', 'outcome name',
+    'eid', 'eid', 1, 'character', 'exposure id',
+    'oid', 'oid', 1, 'character', 'outcome id',
+    'plinkd', 'plinkd', 1, 'character', 'plink',
+    'bcftoolsd', 'bcftoolsd', 1, 'character', 'bcftools',
     
-    'pop', 'z', 1, 'character', 'pop type',
-    'thisdir', 'v', 1, 'character', 'thisdir',
-    'sn', 'n', 1, 'integer', 'sample number',
-    'mrfile', 'u', 1, 'character', 'mrfile'),
+    'pval', 'pval', 1, 'integer', 'pval',
+    'r2', 'r2', 1, 'numeric', 'r2',
+    'kb', 'kb', 1, 'integer', 'kb',
+    'FS', 'FS', 1, 'character', 'F-statistics',
+    
+    'pop', 'pop', 1, 'character', 'pop type',
+    'thisdir', 'thisdir', 1, 'character', 'thisdir',
+    'sn', 'sn', 1, 'integer', 'sample number',
+    'mrfile', 'mrfile', 1, 'character', 'mrfile'),
     byrow = TRUE,
     ncol = 5)
   Args = getopt(command)
   
-  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$ofile) || is.null(Args$ename) || is.null(Args$oname) || is.null(Args$oid) || is.null(Args$plinkd) || is.null(Args$bcftoolsd) || is.null(Args$mrfile) || is.null(Args$thisdir) || is.null(Args$pop) || is.null(Args$sn)) {
+  if (!is.null(Args$help) || is.null(Args$efile) || is.null(Args$ofile) || is.null(Args$ename) || is.null(Args$oname) || is.null(Args$eid) || is.null(Args$oid) || is.null(Args$plinkd) || is.null(Args$bcftoolsd) || is.null(Args$mrfile) || is.null(Args$thisdir) || is.null(Args$pop) || is.null(Args$sn) || is.null(Args$pval) || is.null(Args$r2)  || is.null(Args$kb) || is.null(Args$FS)) {
     cat(paste(getopt(command, usage = TRUE), "\n"))
     q( status = 1)
   }
@@ -40,6 +46,7 @@ if (PROD) {
   o.file <- Args$ofile
   e.name <- Args$ename
   o.name <- Args$oname
+  eid <- Args$eid
   oid <- Args$oid
   plink.d <- Args$plinkd
   bcftools.d <- Args$bcftoolsd
@@ -48,18 +55,29 @@ if (PROD) {
   N <- as.integer(Args$sn)
   pop <- Args$pop
   olp.file <- glue('{thisdir}/{oid}-LP.vcf.gz')
+  a.pval <- -as.integer(Args$pval)
+  pval <- 5 * 10 ^ -as.integer(Args$pval)
+  r2 <- as.numeric(Args$r2)
+  kb <- as.integer(Args$kb)
+  FS <- as.logical(Args$FS)
 } else {
-  e.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-2.vcf.gz'
-  o.file <- 'E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/ieu-a-7.vcf.gz'
+  eid <- 'ieu-b-40'
+  oid <- 'ukb-b-15541'
+  e.file <- '/mnt/GDRIVE/GWAS/IEU.GWAS.200/ieu-b-40.vcf.gz'
+  o.file <- '/mnt/GDRIVE/GWAS/IEU.GWAS.200/ukb-b-15541.vcf.gz'
+  thisdir <- '/mnt/GDRIVE/src.out/IEU.GWAS.O2E.out/ukb-b-15541/ieu-b-40'
+  bcftools.d <- '/tools/bcftools-1.18/bcftools'
+  plink.d <- '/tools/plink-1.90'
+  a.pval <- 8
+  r2 <- 0.001
+  kb <- 10000
+  FS <- as.logical('T')
+  pop <- 'EUR'
+  N <- 786578
+  olp.file <- glue('{thisdir}/{oid}-LP.vcf.gz')
   e.name <- 'Body Fat Percentage'
   o.name <- 'Gastric Cancer'
-  oid <- 'ieu-a-7'
-  plink.d <- 'E:/BaiduNetdiskWorkspace/005.Bioinformatics/MRanalysis/www/bin'
-  bcftools.d <- '/tools/bcftools-1.18/bcftools'
-  mrfile <- glue('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR/test/MR.out/{oid}.tsv')
-  N <- 338903
-  a.pval <- 8
-  pop <- 'EUR'
+  mrfile <- glue('{thisdir}/{oid}.tsv')
 }
 
 if (as.integer(a.pval) == 8) {
@@ -76,9 +94,11 @@ TRY <- try({
   
   if (Sys.info()['sysname'] == 'Linux') {
     e.file.tmp = e.file
-    e.file.filter = glue("{dirname(e.file.tmp)}/{gsub(pattern = '.vcf.gz', replacement = '-LP.vcf.gz', x = basename(e.file.tmp), fixed = TRUE)}")
-    system(glue("{bcftools.d} view -i 'LP>={b.pval}' {e.file.tmp} -Oz -o {e.file.filter}"), intern = FALSE)
-    system(glue("{bcftools.d} index -t {e.file.filter}"), intern = FALSE)
+    e.file.filter = glue("{thisdir}/{gsub(pattern = '.vcf.gz', replacement = '-LP.vcf.gz', x = basename(e.file.tmp), fixed = TRUE)}")
+    if (!file.exists(e.file.filter)) {
+      system(glue("{bcftools.d} view -i 'LP>={b.pval}' {e.file.tmp} -Oz -o {e.file.filter}"), intern = FALSE)
+      system(glue("{bcftools.d} index -t {e.file.filter}"), intern = FALSE)
+    }
     e.file = e.file.filter
   } else {
     e.file = e.file
@@ -89,29 +109,37 @@ TRY <- try({
   e.data = subset(e.data, pval.exposure < 5 * 10 ^ -as.integer(a.pval))
   
   c.data <- ieugwasr::ld_clump(
-    clump_kb = 10000,
-    clump_r2 = 0.001,
+    clump_kb = kb,
+    clump_r2 = r2,
     clump_p = 0.99,
-    pop = 'EUR',
+    pop = pop,
     dplyr::tibble(rsid = e.data$SNP, pval = e.data$pval.exposure, id = e.data$id.exposure),
     plink_bin = ifelse(test = Sys.info()['sysname'] == 'Linux', yes = glue('{plink.d}/plink'), no = glue('{plink.d}/plink.exe')),
-    bfile = glue('{plink.d}/1kg.v3/EUR')
+    bfile = glue('{plink.d}/1kg.v3/{pop}')
   )
   
   e.data <- base::merge(e.data, c.data, by.x = 'SNP', by.y = 'rsid') %>% dplyr::select(-pval, -id)
   
   Ffilter <- 10
-  f.data <- transform(e.data, R2 = 2*((beta.exposure)^2) * eaf.exposure*(1 - eaf.exposure))
-  f.data <- transform(f.data, F = (N - 2) * R2 / (1 - R2))
-  if (is.na(N) || is.null(N) || N < 0) {
-    f.data
+  if (FS) {
+    f.data <- transform(e.data, R2 = 2*((beta.exposure)^2) * eaf.exposure*(1 - eaf.exposure))
+    f.data <- transform(f.data, F = (N - 2) * R2 / (1 - R2))
+    if (is.na(N) || is.null(N) || N < 0) {
+      f.data
+    } else {
+      f.data <- f.data[f.data$F > Ffilter, ]
+    }
   } else {
-    f.data <- f.data[f.data$F > Ffilter, ]
+    f.data <- e.data
   }
   
+  e.vi <- glue('{dirname(e.file)}/{eid}.txt')
+  write.table(x = f.data$SNP, file = e.vi, sep = '\t', row.names = FALSE, quote = FALSE, col.names = FALSE)
+  
   if (Sys.info()['sysname'] == 'Linux') {
-    system(glue('{bcftools.d} index -t {o.file}'), intern = FALSE)
-    system(glue('{bcftools.d} isec -n =2 -w 1 {o.file} {e.file} -Oz -o {olp.file}'), intern = FALSE)
+    if (!file.exists(olp.file)) {
+      system(glue("{bcftools.d} view -i 'ID=@{e.vi}' {o.file} -Oz -o {olp.file}"), intern = FALSE)
+    }
     o.file = olp.file
   } else {
     o.file = o.file
@@ -163,6 +191,8 @@ TRY <- try({
 if (class(TRY) == "try-error") {
   write.table('', file = mrfile, sep = '\t', row.names = FALSE, quote = FALSE, col.names = FALSE)
 } else {
+  mr.odds$id.exposure <- eid
+  mr.odds$id.outcome <- oid
   write.table(mr.odds, file = mrfile, sep = '\t', row.names = FALSE, quote = FALSE)
 }
 

@@ -169,7 +169,7 @@ if __name__ == '__main__':
                    help = 'python3 directory')
     opt.add_option('-m', '--mine',          dest = 'mine',         type = str,             default = '/analysis/Batch.MR/mine', 
                    help = 'self-definied scripts')
-    opt.add_option('--pop',                 dest = 'pop',          type = str,             default = 'EUR', 
+    opt.add_option('--pop',                 dest = 'pop',          type = str,
                    help = 'Super-population to use as reference panel. Default = "EUR". Options are "EUR", "SAS", "EAS", "AFR", "AMR". "legacy" also available - which is a previously used verison of the EUR panel with a slightly different set of markers.')
     opt.add_option('--pval',                dest = 'pval',         type = int,             default = 8, 
                    help = 'pval, [8, 7, 6]')
@@ -289,7 +289,7 @@ if __name__ == '__main__':
         shellFile = '%s/%s.s' % (odirs[oid], oid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHE2O(oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], pval = pvint, outdir = f'{opts.outdir}/{eid}')) 
+        SH.write(CS.AddEnvPATHE2O(eid = eid, oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], pval = pvint, outdir = f'{opts.outdir}/{eid}')) 
         SH.write(CS.all())
         SH.write(CS.EMR())
         SH.write(CS.done())

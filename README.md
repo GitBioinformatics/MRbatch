@@ -12,13 +12,18 @@ install.packages('arrangements')
 install.packages('remotes')
 
 install.packages('BiocManager')
-BiocManager::install('VariantAnnotation')
+BiocManager::install('VariantAnnotation') # libbz2-dev
 BiocManager::install('MendelianRandomization')
 devtools::install_github('mrcieu/gwasglue')
 remotes::install_github('MRCIEU/TwoSampleMR')
 
 install.packages('getopt')
 install.packages('readr')
+install.packages('openxlsx')
+```
+
+```shell
+apt-get install -y libgit2-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libxml2-dev libharfbuzz-dev libfribidi-dev libgmp-dev libbz2-dev
 ```
 
 # MR.batch (Exposure to Outcome)
@@ -109,8 +114,6 @@ nohup /tools/Python-3.8.3/python /analysis/Batch.MR/MRbatch.py \
 --batch
 ```
 
-
-
 # MR.E2O.batch.iv (Exposure to Outcome)
 
 ```shell
@@ -144,6 +147,25 @@ nohup /tools/Python-3.8.3/python \
 --exclude /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out/P0DJD7/.MR \
 --batch
 ```
+
+```shell
+# 2023-11-30
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv.py \
+--out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid ebi-a-GCST90038694 \
+--eif /mnt/GDRIVE/src.out/ebi-a-GCST90038694.xlsx \
+--pval 8 \
+--niv 5 \
+--keep-going \
+--jobs 24 \
+--exclude /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out/ebi-a-GCST90038694/.MR \
+--batch &
+```
+
+
 
 # MR.O2E.batch (Outcome to Exposure)
 
