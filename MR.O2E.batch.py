@@ -32,7 +32,7 @@ import re
 import pandas as pd
 from optparse import OptionParser
 
-os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
+# os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
 
 def UsageInfo():
