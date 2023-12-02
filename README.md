@@ -182,6 +182,25 @@ nohup /tools/Python-3.8.3/python \
 --batch &
 ```
 
+```shell
+# 2023-12-01
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv.py \
+--out /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid ukb-b-8961 \
+--eif /mnt/GDRIVE/src.out/ukb-b-8961.xlsx \
+--pval 5 \
+--niv 5 \
+--keep-going \
+--jobs 24 \
+--exclude /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out/ukb-b-8961/.MR \
+--batch &
+```
+
+
+
 # MR.O2E.batch (Outcome to Exposure)
 
 ```shell

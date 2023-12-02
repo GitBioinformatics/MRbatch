@@ -174,7 +174,8 @@ if __name__ == '__main__':
         
     oid = opts.oid
     ofile = f'{opts.input}/{oid}.vcf.gz'
-        
+    ofile = '/mnt/GDRIVE/GWAS/EBI.GWAS.TMP/GCST90038650_buildGRCh37.tsv.gz'
+    
     if int(opts.pval) == 8:
         pvlog = 7.30103
         pvint = 8
