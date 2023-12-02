@@ -250,7 +250,7 @@ if __name__ == '__main__':
         SH.write(CS.AddEnvPATHO2E(eid = eid, efile = os.path.join(opts.input, exposure), ename = infos[eid][0], oid = oid, ofile = ofile, oname = oname, pval = pvint, r2 = opts.r2, kb = opts.kb, fs = opts.fs, samplen = infos[eid][1], outdir = f'{opts.outdir}/{oid}', pop = opts.pop)) 
         SH.write(CS.allO2E())
         SH.write(CS.OMR())
-        SH.write(CS.done())
+        SH.write(CS.doneO2E())
         SH.close()
         batchs.append(eid)
         
