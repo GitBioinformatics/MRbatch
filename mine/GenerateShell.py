@@ -309,7 +309,7 @@ rule OMR:
 		mrfile = r'{OUTDIR}/.MR/{EID}.tsv'.format(**locals())
 	shell:
 		r'''
-		{RSCRIPT} {MINE}/O.MR.R --efile "{input.Ifile}" --ofile "{OFILE}" --ename "{ENAME}" --oname "{ONAME}" --eid {EID} --oid {OID} --plinkd {PLINK} --bcftoolsd {BCFTOOLS} --pval {PVAL} --r2 {R2} --kb {KB} --FS "{FS}" --pop {POP} --thisdir {OUTDIR}/{EID} --sn {SAMPLEN} --mrfile {output.mrfile}
+		{RSCRIPT} {MINE}/O.MR.R --efile "{input.ifile}" --ofile "{OFILE}" --ename "{ENAME}" --oname "{ONAME}" --eid {EID} --oid {OID} --plinkd {PLINK} --bcftoolsd {BCFTOOLS} --pval {PVAL} --r2 {R2} --kb {KB} --FS "{FS}" --pop {POP} --thisdir {OUTDIR}/{EID} --sn {SAMPLEN} --mrfile {output.mrfile}
 		'''
         """
         
