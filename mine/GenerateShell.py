@@ -333,6 +333,24 @@ rule done:
             
         return commond
     
+    def doneO2E(self, ):
+        ''' 
+        '''
+        commond = '\n'
+        commond += r"""
+rule done:
+	input:
+		itsv = r'{OUTDIR}/.MR/{EID}.tsv'.format(**locals())
+	output:
+		odone = r'{OUTDIR}/.done/{EID}.done'.format(**locals())
+	shell:
+		r'''
+		touch {output.odone}
+		'''
+        """
+            
+        return commond
+    
     
     def batch(self, ids, outdir, eid):
         ''' 
