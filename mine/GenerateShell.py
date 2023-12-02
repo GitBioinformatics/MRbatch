@@ -304,7 +304,7 @@ rule EMR:
         commond += """
 rule OMR:
 	input:
-		ifile = r'{IFILE}'.format(**locals())
+		ifile = r'{EFILE}'.format(**locals())
 	output:
 		mrfile = r'{OUTDIR}/.MR/{OID}.tsv'.format(**locals())
 	shell:
