@@ -12,7 +12,7 @@ if (Sys.info()['sysname'] == 'Linux') {
 } else {
   PROD = FALSE
 }
-PROD = FALSE
+
 if (PROD) {
   command = matrix(c( 
     'help', 'h', 0, 'loical', '帮助文档',
