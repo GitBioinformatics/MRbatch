@@ -29,7 +29,8 @@ This scripts writen by Albert丶XN
 import os
 import shutil
 
-wkdir = 'G:/src.out/IEU.GWAS.E2O.out/P0DJD7'
+eid = 'ukb-b-8961'
+wkdir = f'G:/src.out/IEU.GWAS.E2O.out/{eid}'
 
 oids = [item for item in os.listdir(wkdir) if item.find('-') > -1]
 

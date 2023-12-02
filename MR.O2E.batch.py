@@ -240,7 +240,8 @@ if __name__ == '__main__':
     odirs = creatDirs(ro = opts.outdir, ot = exposures, it = oid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
-    oname = infos[oid][0]
+    # oname = infos[oid][0]
+    oname = 'Depression'
     for exposure in exposures:
         eid = exposure.split('.')[0]
         shellFile = '%s/%s.s' % (odirs[eid], eid) 

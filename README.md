@@ -209,17 +209,20 @@ nohup /tools/Python-3.8.3/python \
 ```
 
 ```shell
-# 2023-12-01
+# 2023-12-02
 /tools/Python-3.8.3/python \
 /analysis/Batch.MR/MR.O2E.batch.py \
 --input /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
 --outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out \
 --info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
---oid ieu-b-40 \
+--eids /mnt/GDRIVE/src.out/ids.txt \
+--oid GCST90038650 \
 --pval 8 \
---batch \
+--r2 0.001 \
+--kb 10000 \
+--fs T \
 --keep-going \
---jobs 2 \
+--jobs 3 \
 --batch
 ```
 
