@@ -65,7 +65,6 @@ if (PROD) {
   oid <- 'ukb-b-15541'
   e.file <- '/mnt/GDRIVE/GWAS/IEU.GWAS.200/ieu-b-40.vcf.gz'
   o.file <- '/mnt/GDRIVE/GWAS/IEU.GWAS.200/ukb-b-15541.vcf.gz'
-  o.file <- '/mnt/GDRIVE/GWAS/EBI.GWAS.TMP/GCST90038650_buildGRCh37.tsv.gz'
   thisdir <- '/mnt/GDRIVE/src.out/IEU.GWAS.O2E.out/ukb-b-15541/ieu-b-40'
   bcftools.d <- '/tools/bcftools-1.18/bcftools'
   plink.d <- '/tools/plink-1.90'
@@ -141,19 +140,16 @@ TRY <- try({
   
   if (Sys.info()['sysname'] == 'Linux') {
     if (!file.exists(olp.file)) {
-      #system(glue("{bcftools.d} view -i 'ID=@{e.vi}' {o.file} -Oz -o {olp.file}"), intern = FALSE)
-      system(glue("zcat {o.file} | head -n 1 > {dirname(e.file)}/column-names.txt"), intern = FALSE)
-      system(glue("zcat {o.file} | grep -w -F -f {e.vi} | cat {dirname(e.file)}/column-names.txt - > {olp.file}"), intern = FALSE)
+      system(glue("{bcftools.d} view -i 'ID=@{e.vi}' {o.file} -Oz -o {olp.file}"), intern = FALSE)
     }
     o.file = olp.file
   } else {
     o.file = o.file
   }
   
-  # vcfRT = readVcf(o.file)
-  # o.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'outcome')
-  o.data = read.table(o.file, sep = '\t', header = TRUE)
-  o.data <- merge(f.data, o.data, by.x = 'SNP', by.y = 'variant_id')
+  vcfRT = readVcf(o.file)
+  o.data = gwasglue::gwasvcf_to_TwoSampleMR(vcf = vcfRT, type = 'outcome')
+  o.data <- merge(f.data, o.data, by.x = 'SNP', by.y = 'SNP')
   
   f.data$Phenotype <- e.name
   o.data$Phenotype <- o.name
@@ -174,14 +170,14 @@ TRY <- try({
   o.dat <- TwoSampleMR::format_data(
     dat = o.data,
     type = "outcome",
-    snps = o.data$variant_id,
+    snps = o.data$SNP,
     snp_col = 'SNP',
-    beta_col = 'beta',
-    se_col = 'standard_error',
-    effect_allele_col = 'effect_allele',
-    other_allele_col = 'other_allele',
-    pval_col = 'p_value',
-    eaf_col = 'effect_allele_frequency'
+    beta_col = 'beta.outcome',
+    se_col = 'se.outcome',
+    effect_allele_col = 'effect_allele.outcome',
+    other_allele_col = 'other_allele.outcome',
+    pval_col = 'pval.outcome',
+    eaf_col = 'eaf.outcome'
   )
   
   h.dat <- TwoSampleMR::harmonise_data(exposure_dat = e.dat, outcome_dat = o.dat)
