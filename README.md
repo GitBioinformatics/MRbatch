@@ -199,8 +199,6 @@ nohup /tools/Python-3.8.3/python \
 --batch &
 ```
 
-
-
 # MR.O2E.batch (Outcome to Exposure)
 
 ```shell
@@ -220,9 +218,29 @@ nohup /tools/Python-3.8.3/python \
 --pval 8 \
 --r2 0.001 \
 --kb 10000 \
---fs T \
+--fs F \
+--pop EUR \
 --keep-going \
---jobs 3 \
+--jobs 24 \
+--batch
+```
+
+```shell
+# 2023-12-03
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.O2E.batch.py \
+--input /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eids /mnt/GDRIVE/src.out/ids.txt \
+--oid GCST90038650 \
+--pval 6 \
+--r2 0.001 \
+--kb 10000 \
+--fs F \
+--pop EUR \
+--keep-going \
+--jobs 24 \
 --batch
 ```
 

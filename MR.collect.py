@@ -31,13 +31,15 @@ import sys
 import pandas as pd
 
 eid = 'P0DJD7'
-eid = 'ebi-a-GCST90038694'
+eid = 'GCST90038650'
 
 
 if sys.platform.find('win') > -1:
     wkdir = f'G:/src.out/IEU.GWAS.E2O.out/{eid}/.MR'
+    wkdir = f'G:/src.out/IEU.GWAS.O2E.out/{eid}/.MR'
 else:
     wkdir = f'/mnt/GDRIVE/src.out/IEU.GWAS.E2O.out/{eid}/.MR'
+
 
 mrs = os.listdir(wkdir)
 
