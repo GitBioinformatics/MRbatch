@@ -174,7 +174,7 @@ if __name__ == '__main__':
         
     oid = opts.oid
     ofile = f'{opts.input}/{oid}.vcf.gz'
-    ofile = '/mnt/GDRIVE/GWAS/EBI.GWAS.200/GCST90038650_buildGRCh37.tsv.gz'
+    #ofile = '/mnt/GDRIVE/GWAS/EBI.GWAS.200/GCST90038650_buildGRCh37.tsv.gz'
     
     if int(opts.pval) == 8:
         pvlog = 7.30103
@@ -240,8 +240,8 @@ if __name__ == '__main__':
     odirs = creatDirs(ro = opts.outdir, ot = exposures, it = oid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
-    # oname = infos[oid][0]
-    oname = 'Depression'
+    oname = infos[oid][0]
+    #oname = 'Depression'
     for exposure in exposures:
         eid = exposure.split('.')[0]
         shellFile = '%s/%s.s' % (odirs[eid], eid) 
