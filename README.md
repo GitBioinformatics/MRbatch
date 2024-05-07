@@ -1,3 +1,25 @@
+# Basic Knowledge
+
+## How to find the standard error when the GWAS summary data does not provide?
+
+```R
+# https://www.biostars.org/p/9468350/
+
+# In R, assuming the tests are two-tailed
+> BETA<- 1.947
+> PValue<- 1.58e-8
+> SE <- abs(BETA)/qnorm(1 - PValue/2)   
+> SE
+[1] 0.3444407
+
+# Checking
+> Z <- BETA/SE
+> 2*pnorm(Z, lower = FALSE)
+[1] 1.58e-08
+```
+
+
+
 # Dependencies
 
 ```R
@@ -199,6 +221,40 @@ nohup /tools/Python-3.8.3/python \
 --batch &
 ```
 
+```shell
+# 2024-03-07
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv.py \
+--out /mnt/GDRIVE/GWAS/IEU \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2p.xlsx \
+--eid ebi-a-GCST90018861 \
+--eif /mnt/GDRIVE/GWAS/ebi-a-GCST90018861.xlsx \
+--pval 7 \
+--niv 5 \
+--keep-going \
+--jobs 12 \
+--batch
+```
+
+```shell
+# 2024-04-06
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv.py \
+--out /mnt/GDRIVE/GWAS/IEU \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.E2O.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2d.xlsx \
+--eid ebi-a-GCST90018641 \
+--eif /mnt/GDRIVE/GWAS/ebi-a-GCST90018641.xlsx \
+--pval 6 \
+--niv 5 \
+--keep-going \
+--jobs 14 \
+--batch
+```
+
+
+
 # MR.O2E.batch (Outcome to Exposure)
 
 ```shell
@@ -242,5 +298,91 @@ nohup /tools/Python-3.8.3/python \
 --keep-going \
 --jobs 24 \
 --batch
+
+# 2023-12-04
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.O2E.batch.py \
+--input /mnt/GDRIVE/GWAS/IEU.GWAS.200 \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eids /mnt/GDRIVE/src.out/ids.txt \
+--oid ukb-b-9493 \
+--pval 6 \
+--r2 0.001 \
+--kb 10000 \
+--fs F \
+--pop EUR \
+--keep-going \
+--jobs 24 \
+--batch &
+```
+
+```shell
+# 2024-01-13
+# 2023-12-04
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.O2E.batch.py \
+--input /mnt/GDRIVE/GWAS/IEU \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--oid ukb-a-552 \
+--pval 8 \
+--r2 0.001 \
+--kb 10000 \
+--fs F \
+--pop EUR \
+--keep-going \
+--jobs 24 \
+--batch &
+```
+
+```shell
+# 2024-01-23
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.O2E.batch.py \
+--input /mnt/GDRIVE/GWAS/IEU \
+--outdir /mnt/GDRIVE/src.out/IEU.GWAS.O2E.out \
+--info /mnt/GDRIVE/GWAS/IEU.GWAS-v2c8.xlsx \
+--oid ebi-a-GCST005195 \
+--pval 8 \
+--r2 0.001 \
+--kb 10000 \
+--fs F \
+--pop EUR \
+--keep-going \
+--jobs 24 \
+--batch &
+```
+
+# Collect
+
+```python
+import os
+import pandas as pd
+
+wkdir = 'G:/src.out/IEU.GWAS.O2E.out/ukb-a-552/.MR'
+mids = os.listdir(wkdir)
+mids = [mid for mid in mids if mid.endswith('.tsv')]
+DF = pd.DataFrame()
+for mid in mids:
+    
+    tsv = f'{wkdir}/{mid}'
+    if os.stat(tsv).st_size > 10:
+        DFtmp  = pd.read_csv(tsv, sep = '\t')
+        NDFtmp = DFtmp[DFtmp['method'] == 'Inverse variance weighted']
+        if len(NDFtmp) == 0:
+            continue
+        MDFtmp = NDFtmp[NDFtmp['pval'] < 0.05]
+        if len(MDFtmp) == 0:
+            continue
+        if len(DFtmp[DFtmp['pval'] < 0.05]) > 4:
+            DF = pd.concat([DF, DFtmp])
+            print(mid)
+            
+print()
+print()
+NDF = DF[DF['method'] == 'Inverse variance weighted']
+print('\n'.join(list((NDF['exposure']))))
+DF.to_excel('C:/Users/Administrator/Desktop/O2E.xlsx', index = False)
 ```
 
