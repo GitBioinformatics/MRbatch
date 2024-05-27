@@ -109,11 +109,10 @@ def creatDirs(ro, ot, it):
     创建样本输出路径.
     '''
     odirs = {}
-    for o in ot:
+    for i, o in ot:
         if o.endswith('.vcf.gz'):
-            oid = o.split('.')[0]
-            _dir = '%s/%s/%s' % (ro, it, oid)
-            odirs[oid] = _dir
+            _dir = '%s/%s/%s' % (ro, it, i)
+            odirs[i] = [_dir, o]
             # 当路径不存在时, 创建该目录 .
             if not os.path.exists(_dir):
                 os.makedirs(_dir)
@@ -203,11 +202,10 @@ if __name__ == '__main__':
         ID = DF.loc[index, 'ID']
         gz = f"{opts.out}/{DF.loc[index, 'VCF']}"
         if os.path.exists(gz):
-            SN = 0
+            SN = gz
             TRAIT = str(DF.loc[index, 'Trait'])
             TRAIT = re.sub('"', "'", TRAIT) if TRAIT.find('"') > -1 else TRAIT
             Population = 'European'
-            SN = int(SN) if isNumber(SN) else -1
             infos[ID] = [TRAIT, SN, Population]
        
     if opts.pop in ['EUR']:
@@ -227,8 +225,6 @@ if __name__ == '__main__':
             oids = [item.strip() for item in list(set(oidstmp.split(';'))) if item.strip() != '']
     else:
         oids = list(infos.keys())
-       
-    outcomes = os.listdir(opts.out)
     
     if not os.path.exists(f'{opts.outdir}/{eid}'):
         os.makedirs(f'{opts.outdir}/{eid}')
@@ -249,16 +245,18 @@ if __name__ == '__main__':
     
     shutil.copy(eidfile, erds)
     
+    outcomes = [[key, value[1]] for key,value in infos.items()]
+    
     odirs = creatDirs(ro = opts.outdir, ot = outcomes, it = eid)
     batchs = []
     CS = Gshell.GenerateShell(opts.Rscript, opts.bcftools, opts.plink, opts.python3, opts.mine)
     ename = eid
     for outcome in outcomes:
-        oid = outcome.split('.')[0]
-        shellFile = '%s/%s.s' % (odirs[oid], oid) 
+        oid, gz = outcome
+        shellFile = '%s/%s.s' % (odirs[oid][0], oid) 
         SH = open(shellFile, mode = 'w', encoding = 'utf-8')
         SH.write(CS.AddHead())
-        SH.write(CS.AddEnvPATHE2O(eid = eid, oid = oid, efile = erds, ename = ename, ofile = os.path.join(opts.out, outcome), oname = infos[oid][0], pval = pvint, outdir = f'{opts.outdir}/{eid}')) 
+        SH.write(CS.AddEnvPATHE2O(eid = eid, oid = oid, efile = erds, ename = ename, ofile = gz, oname = infos[oid][0], pval = pvint, outdir = f'{opts.outdir}/{eid}')) 
         SH.write(CS.all())
         SH.write(CS.EMR())
         SH.write(CS.done())
