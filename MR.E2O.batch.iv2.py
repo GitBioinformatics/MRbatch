@@ -34,7 +34,8 @@ import pandas as pd
 from optparse import OptionParser
 
 # BaiduSyncdisk BaiduNetdiskWorkspace
-os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
+if sys.platform.find('win') > -1:
+    os.chdir('E:/BaiduNetdiskWorkspace/003.MPU/004.Batch.MR')
 import mine.GenerateShell as Gshell
 
 
