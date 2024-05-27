@@ -30,10 +30,11 @@ import os
 import sys
 import pandas as pd
 
-eid = 'ebi-a-GCST90018641'
+eid = 'ebi-a-GCST90018875'
 
 if sys.platform.find('win') > -1:
-    wkdir = f'G:/src.out/IEU.GWAS.E2O.out/{eid}/.MR'
+    #wkdir = f'G:/src.out/IEU.GWAS.E2O.out/{eid}/.MR'
+    wkdir = 'C:/Users/p2314405/Desktop/.MR'
 else:
     wkdir = f'/mnt/GDRIVE/src.out/IEU.GWAS.E2O.out/{eid}/.MR'
 
@@ -85,6 +86,7 @@ if True:
 print()
 print('\n'.join(Es))
 if sys.platform.find('win') > -1:
-    DF.to_excel(f'C:/Users/Administrator/Desktop/MR-{eid}.xlsx', index = False)
+    #DF.to_excel(f'C:/Users/Administrator/Desktop/MR-{eid}.xlsx', index = False)
+    DF.to_excel(f'C:/Users/p2314405/Desktop/MR-{eid}.xlsx', index = False)
 else:
     DF.to_excel(f'/mnt/GDRIVE/src.out/MR-{eid}.xlsx', index = False)
