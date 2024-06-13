@@ -176,7 +176,8 @@ if __name__ == '__main__':
         
     oid = opts.oid
     ofile = f'{opts.input}/{oid}.vcf.gz'
-    ofile = 'C:/Users/p2314405/Desktop/ebi-a-GCST90038607.vcf.gz'
+    if sys.platform.find('win') > -1:
+        ofile = 'C:/Users/p2314405/Desktop/ebi-a-GCST90038607.vcf.gz'
     
     if int(opts.pval) == 8:
         pvlog = 7.30103
