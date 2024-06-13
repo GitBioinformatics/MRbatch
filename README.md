@@ -253,7 +253,21 @@ nohup /tools/Python-3.8.3/python \
 --batch
 ```
 
-
+```shell
+# 2024-06-06
+/tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv.py \
+--out /mnt/ADRIVE/GWAS/IEU \
+--outdir /results/test/IEU.GWAS.E2O.out \
+--info /mnt/ADRIVE/GWAS/IEU.GWAS-v2b.xlsx \
+--eid ebi-a-GCST90038607 \
+--eif /mnt/ADRIVE/GWAS/ebi-a-GCST90038607.xlsx \
+--pval 6 \
+--niv 5 \
+--keep-going \
+--jobs 14 \
+--batch
+```
 
 # MR.O2E.batch (Outcome to Exposure)
 
@@ -354,6 +368,27 @@ nohup /tools/Python-3.8.3/python \
 --batch &
 ```
 
+```shell
+# G9.078
+# 2024-06-13
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.O2E.batch2.py \
+--input /mnt/ADRIVE/GWAS/IEU \
+--outdir /results/test/IEU.GWAS.O2E.out \
+--info /mnt/ADRIVE/GWAS/OpenGWAS2.xlsx \
+--oid ebi-a-GCST90038607 \
+--pval 8 \
+--r2 0.001 \
+--kb 10000 \
+--fs F \
+--pop EUR \
+--keep-going \
+--jobs 1 \
+--batch &
+```
+
+
+
 # Collect
 
 ```python
@@ -384,5 +419,22 @@ print()
 NDF = DF[DF['method'] == 'Inverse variance weighted']
 print('\n'.join(list((NDF['exposure']))))
 DF.to_excel('C:/Users/Administrator/Desktop/O2E.xlsx', index = False)
+```
+
+# MR.E2O.batch.iv2.py
+
+```shell
+nohup /tools/Python-3.8.3/python \
+/analysis/Batch.MR/MR.E2O.batch.iv2.py \
+--out /results/EBI \
+--outdir /results/test/IEU.GWAS.E2O.out \
+--info /results/test/IEU.GWAS.E2O.out/1400.xlsx \
+--eid ebi-a-GCST90027707 \
+--eif /results/test/IEU.GWAS.E2O.out/ebi-a-GCST90027707.xlsx \
+--pval 6 \
+--niv 3 \
+--keep-going \
+--jobs 20 \
+--batch &
 ```
 
